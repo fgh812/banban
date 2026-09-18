@@ -1,0 +1,49 @@
+name: Build Android app
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '버전 이름 (예: 1.0.0)'
+        default: '1.0.0'
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - uses: android-actions/setup-android@v3
+      - run: npm ci
+      - name: Build web (app 용, base '/')
+        run: npm run build
+        env: { BASE_PATH: / }
+      - name: Create Android project
+        run: npx cap add android
+      - name: Icons & splash
+        run: npx @capacitor/assets generate --android --iconBackgroundColor '#0e4f45' --iconBackgroundColorDark '#0e4f45' --splashBackgroundColor '#eff1f0' --splashBackgroundColorDark '#0d0d0d'
+      - name: Configure signing, name, version, Firebase
+        run: node scripts/android-setup.mjs
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          VERSION_CODE: ${{ github.run_number }}
+          VERSION_NAME: ${{ github.event.inputs.version }}
+      - run: npx cap sync android
+      - name: Build release bundle (.aab) and APK
+        working-directory: android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew bundleRelease assembleRelease --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: banban-android-${{ github.event.inputs.version }}
+          path: |
+            android/app/build/outputs/bundle/release/app-release.aab
+            android/app/build/outputs/apk/release/app-release.apk
