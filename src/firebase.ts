@@ -1,6 +1,10 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signOut, onAuthStateChanged, type User } from 'firebase/auth'
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signInWithCredential, signOut, onAuthStateChanged, type User } from 'firebase/auth'
 import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore'
+import { Capacitor } from '@capacitor/core'
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
+
+export const isNative = Capacitor.isNativePlatform()
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCMSEVlPh_rQPuNz-DxS0Inx0tXGT4XHvI',
@@ -23,6 +27,14 @@ const provider = new GoogleAuthProvider()
 provider.setCustomParameters({ prompt: 'select_account' })
 
 export async function loginWithGoogle() {
+  if (isNative) {
+    // 앱(안드로이드/iOS): 네이티브 구글 로그인 → 같은 계정으로 JS SDK 도 로그인
+    const r = await FirebaseAuthentication.signInWithGoogle()
+    const idToken = r.credential?.idToken
+    if (!idToken) throw new Error('구글 로그인 정보를 받지 못했어요')
+    await signInWithCredential(auth, GoogleAuthProvider.credential(idToken, r.credential?.accessToken))
+    return
+  }
   try {
     await signInWithPopup(auth, provider)
   } catch (e: any) {
@@ -34,6 +46,6 @@ export async function loginWithGoogle() {
     }
   }
 }
-export function logout() { return signOut(auth) }
+export async function logout() { if (isNative) { try { await FirebaseAuthentication.signOut() } catch {} } await signOut(auth) }
 export function watchAuth(cb: (u: User | null) => void) { return onAuthStateChanged(auth, cb) }
 export type { User }
