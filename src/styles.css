@@ -1,0 +1,327 @@
+
+:root{
+  color-scheme: light;
+  --paper:#eef0ee; --surface:#fcfcfb; --surface-2:#f4f5f2;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --line:#c3c2b7; --ring:rgba(11,11,11,.10);
+  --accent:#0e4f45; --accent-soft:#dfeae6;
+  --tae:#2a78d6; --ye:#eb6834; --net:#1baf7a; --debt:#4a3aa7; --asset:#1baf7a;
+  --good:#0ca30c; --bad:#d03b3b; --good-ink:#006300; --bad-ink:#a92f2f;
+  --shadow:0 1px 2px rgba(11,11,11,.05), 0 8px 24px -16px rgba(11,11,11,.30);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#0d0d0d; --surface:#1a1a19; --surface-2:#222221;
+    --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --line:#383835; --ring:rgba(255,255,255,.10);
+    --accent:#3fae99; --accent-soft:#16302c;
+    --tae:#3987e5; --ye:#d95926; --net:#199e70; --debt:#9085e9; --asset:#199e70;
+    --good:#0ca30c; --bad:#d03b3b; --good-ink:#0ca30c; --bad-ink:#e07070;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#0d0d0d; --surface:#1a1a19; --surface-2:#222221;
+  --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --line:#383835; --ring:rgba(255,255,255,.10);
+  --accent:#3fae99; --accent-soft:#16302c;
+  --tae:#3987e5; --ye:#d95926; --net:#199e70; --debt:#9085e9; --asset:#199e70;
+  --good:#0ca30c; --bad:#d03b3b; --good-ink:#0ca30c; --bad-ink:#e07070;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans KR", system-ui, -apple-system, sans-serif;
+  font-size:14px; line-height:1.5;
+}
+.wrap{max-width:1180px; margin:0 auto; padding:0 16px; padding-block:14px 64px}
+.num{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums}
+
+/* ---------- header ---------- */
+header.top{display:flex; flex-wrap:wrap; gap:14px 20px; align-items:flex-end; justify-content:space-between; margin-bottom:18px}
+h1{font-family:"Gowun Batang", Georgia, serif; font-weight:700; font-size:27px; margin:0; letter-spacing:-.01em; text-wrap:balance}
+.sub{color:var(--ink-2); font-size:12.5px; margin-top:3px}
+.topstat{display:flex; gap:22px; flex-wrap:wrap}
+.topstat div{text-align:right}
+.topstat .k{font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted)}
+.topstat .v{font-size:17px; font-weight:500}
+
+/* ---------- month rail ---------- */
+.rail{display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px; scrollbar-width:thin}
+.chip{
+  flex:0 0 auto; border:1px solid var(--ring); background:var(--surface); color:var(--ink-2);
+  border-radius:9px; padding:7px 11px 8px; cursor:pointer; font:inherit; text-align:left; line-height:1.25;
+}
+.chip b{display:block; font-weight:600; font-size:12.5px; color:var(--ink)}
+.chip span{display:block; font-size:10.5px; margin-top:2px}
+.chip .up{color:var(--good-ink)} .chip .down{color:var(--bad-ink)}
+.chip[aria-current="true"]{background:var(--accent); border-color:var(--accent)}
+.chip[aria-current="true"] b, .chip[aria-current="true"] span{color:#fff}
+.chip:focus-visible, button:focus-visible, input:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+
+/* ---------- cards ---------- */
+.card{background:var(--surface); border:1px solid var(--ring); border-radius:13px; box-shadow:var(--shadow); padding:16px 16px 18px; margin-bottom:16px}
+.card > h2{font-size:13px; font-weight:600; margin:0 0 2px; letter-spacing:-.005em}
+.card{position:relative}
+.secmove{position:absolute; top:12px; right:14px; display:inline-flex; gap:2px}
+.secmove.inline{position:static}
+.mv{font:inherit; font-size:10px; line-height:1; color:var(--muted); background:var(--surface-2); border:1px solid var(--ring); border-radius:5px; padding:5px 6px; cursor:pointer}
+.mv:hover{color:var(--ink); border-color:var(--line)} .mv[disabled]{opacity:.3; cursor:default}
+.card > .hint{font-size:11.5px; color:var(--muted); margin:0 0 14px}
+
+/* ---------- summary ---------- */
+.tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1px; background:var(--grid); border:1px solid var(--grid); border-radius:11px; overflow:hidden}
+.tile{background:var(--surface); padding:13px 14px 14px}
+.tile .k{font-size:11px; color:var(--muted); letter-spacing:.04em}
+.tile .v{font-size:21px; font-weight:500; margin-top:3px; letter-spacing:-.02em}
+.tile .split{display:flex; gap:10px; margin-top:7px; font-size:11px; color:var(--ink-2); flex-wrap:wrap}
+.tile .split i{font-style:normal; display:inline-flex; align-items:center; gap:4px}
+.dot{width:7px; height:7px; border-radius:2px; display:inline-block}
+.dot{background:var(--pc, var(--muted))}
+.tile.net .v.pos{color:var(--good-ink)} .tile.net .v.neg{color:var(--bad-ink)}
+.tile .k2{color:var(--line); font-size:10px}
+.tile .now{margin-top:8px; padding-top:7px; border-top:1px dashed var(--grid); font-size:11.5px; color:var(--ink-2)}
+.tile .now b{font-weight:600; color:var(--ink)}
+tr.tot.now td{font-weight:500; font-size:13px; color:var(--ink-2); background:var(--surface-2); border-top:1px dashed var(--line)}
+tr.tot.now .sub{font-size:10.5px; color:var(--muted); font-weight:400; margin-left:6px}
+@media (max-width:720px){ .tiles{grid-template-columns:repeat(2,1fr)} }
+
+/* ---------- ledger ---------- */
+.ledhead{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; margin-bottom:12px}
+.btn{font:inherit; font-size:12px; border-radius:8px; border:1px solid var(--ring); background:var(--surface-2); color:var(--ink); padding:6px 11px; cursor:pointer}
+.btn:hover{border-color:var(--line)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn.ghost{background:transparent}
+.btn[disabled]{opacity:.45; cursor:not-allowed}
+.scroll{overflow-x:auto}
+.viewbar{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; margin-bottom:12px}
+.seg{display:inline-flex; border:1px solid var(--ring); border-radius:8px; overflow:hidden; background:var(--surface-2)}
+.segbtn{font:inherit; font-size:12px; border:none; background:transparent; color:var(--ink-2); padding:6px 11px; cursor:pointer}
+.segbtn + .segbtn{border-left:1px solid var(--ring)}
+.segbtn[aria-selected="true"]{background:var(--accent); color:#fff}
+.chk{font-size:12px; color:var(--ink-2); display:inline-flex; align-items:center; gap:5px; cursor:pointer}
+table.multi{min-width:0}
+table.multi th{white-space:nowrap}
+table.multi th.mh{text-align:center; padding:0 6px 4px; border-bottom:none; cursor:pointer; color:var(--ink)}
+table.multi th.mh:hover{color:var(--accent)}
+table.multi th.mh.cur{color:var(--accent)}
+table.multi th.sub{font-size:10px; padding:0 6px 6px}
+table.multi td{padding:4px 8px; white-space:nowrap}
+table.multi td.c{text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; font-size:12.5px}
+table.multi td.c.zero{color:var(--grid)}
+table.multi td.c small{color:var(--muted); font-size:10px; margin-left:4px}
+table.multi td.name{position:sticky; left:0; background:var(--surface); z-index:1; min-width:150px}
+table.multi tr.item:hover td.name{background:var(--surface-2)}
+table.multi tr.cat td.name, table.multi tr.tot td.name, table.multi tr.income td.name{background:var(--surface)}
+table.multi tr.income td.name{background:var(--surface-2)}
+table.multi th.name{position:sticky; left:0; background:var(--surface); z-index:2}
+table.multi td.sep, table.multi th.sep{border-left:1px solid var(--line)}
+table.multi tr.tot td.c.pos{color:var(--good-ink)} table.multi tr.tot td.c.neg{color:var(--bad-ink)}
+table.led{width:100%; min-width:660px; border-collapse:collapse}
+table.led th{font-size:10.5px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); text-align:right; padding:0 8px 7px; border-bottom:1px solid var(--line)}
+table.led th.l{text-align:left}
+table.led td{padding:3px 8px; border-bottom:1px solid var(--grid); vertical-align:middle}
+table.led td:nth-child(2), table.led th:nth-child(2){padding-left:4px; padding-right:4px; white-space:nowrap}
+/* 분류별 색 — 엑셀의 색칠한 구분처럼 */
+:root{ --k0:#2a78d6; --k1:#eb6834; --k2:#1baf7a; --k3:#d99400; --k4:#6f5bd6; --k5:#e0568f; --k6:#0e8f7a; }
+tr.cat td{padding:9px 8px 7px; border-bottom:none}
+tr.cat .cname{font-size:12px; font-weight:700; letter-spacing:.02em}
+tr.cat .csum{text-align:right; font-size:12px; font-weight:600}
+tr.cat.k0 td{background:color-mix(in oklab, var(--k0) 13%, var(--surface))} tr.cat.k0 .cname, tr.cat.k0 .csum{color:color-mix(in oklab, var(--k0) 75%, var(--ink))}
+tr.cat.k1 td{background:color-mix(in oklab, var(--k1) 13%, var(--surface))} tr.cat.k1 .cname, tr.cat.k1 .csum{color:color-mix(in oklab, var(--k1) 75%, var(--ink))}
+tr.cat.k2 td{background:color-mix(in oklab, var(--k2) 14%, var(--surface))} tr.cat.k2 .cname, tr.cat.k2 .csum{color:color-mix(in oklab, var(--k2) 65%, var(--ink))}
+tr.cat.k3 td{background:color-mix(in oklab, var(--k3) 15%, var(--surface))} tr.cat.k3 .cname, tr.cat.k3 .csum{color:color-mix(in oklab, var(--k3) 65%, var(--ink))}
+tr.cat.k4 td{background:color-mix(in oklab, var(--k4) 13%, var(--surface))} tr.cat.k4 .cname, tr.cat.k4 .csum{color:color-mix(in oklab, var(--k4) 75%, var(--ink))}
+tr.cat.k5 td{background:color-mix(in oklab, var(--k5) 13%, var(--surface))} tr.cat.k5 .cname, tr.cat.k5 .csum{color:color-mix(in oklab, var(--k5) 75%, var(--ink))}
+tr.cat.k6 td{background:color-mix(in oklab, var(--k6) 14%, var(--surface))} tr.cat.k6 .cname, tr.cat.k6 .csum{color:color-mix(in oklab, var(--k6) 70%, var(--ink))}
+.catname{font:inherit; font-size:12px; font-weight:700; letter-spacing:.02em; background:transparent; border:1px solid transparent; border-radius:5px; padding:2px 5px; color:inherit; width:100%; min-width:0}
+.catname:hover{border-color:color-mix(in oklab, currentColor 30%, transparent)} .catname:focus{outline:none; border-color:var(--accent); background:var(--surface)}
+tr.cat .grp{font-size:10.5px; color:var(--muted); letter-spacing:.04em}
+tr.cat .catdel{opacity:.35} tr.cat:hover .catdel, tr.cat .catdel:focus{opacity:1}
+@media (hover:none){ tr.cat .catdel{opacity:.5} }
+tr.addcat td{padding:12px 8px 14px; border-bottom:1px solid var(--line)}
+.addcatform{display:flex; gap:6px; flex-wrap:wrap; align-items:center}
+.addcatform input, .addcatform select{font:inherit; font-size:12.5px; padding:6px 9px; border:1px solid var(--grid); border-radius:8px; background:var(--surface); color:var(--ink)}
+.addcatform input{min-width:200px; flex:1}
+.addcatform input:focus, .addcatform select:focus{outline:none; border-color:var(--accent)}
+.namecell{display:flex; align-items:center; gap:2px}
+.grab{flex:0 0 auto; font-size:14px; line-height:1; color:var(--muted); padding:4px 4px; cursor:grab; opacity:.45; touch-action:none; user-select:none}
+tr.item:hover .grab{opacity:1}
+@media (hover:none){ .grab{opacity:.7} }
+tr.item, tr.cat, tr.tot.grp{cursor:grab}
+tr.tot.grp .ggrab{opacity:.35} tr.tot.grp:hover .ggrab{opacity:1}
+tr.tot.grp input, tr.tot.grp label{cursor:auto}
+tr.cat .cgrab{opacity:.35} tr.cat:hover .cgrab{opacity:1}
+tr.item input, tr.item button{cursor:auto}
+tr.item .inp.amt, tr.item .inst input{cursor:text}
+tr.dragsrc td{opacity:.35}
+tr.drop-before td{box-shadow:inset 0 3px 0 0 var(--accent)}
+tr.drop-after td{box-shadow:inset 0 -3px 0 0 var(--accent)}
+tr.cat.drop-into td, tr.addrow.drop-into td{box-shadow:inset 0 0 0 2px var(--accent)}
+.dragghost{position:fixed; z-index:50; pointer-events:none; background:var(--surface); border:1px solid var(--accent); border-radius:8px; box-shadow:var(--shadow); padding:7px 12px; font-size:13px; display:flex; gap:14px; align-items:center; transform:translate(-14px,-50%); opacity:.95}
+.dragghost .num{color:var(--ink-2)}
+body.dragging{user-select:none; cursor:grabbing}
+body.dragging *{cursor:grabbing!important}
+.amtwrap{display:flex; align-items:center; gap:4px}
+.amtwrap .done{flex:0 0 auto; width:15px; height:15px; accent-color:var(--accent); cursor:pointer; margin:0 0 0 2px}
+.amtwrap .inp{flex:1; min-width:0}
+tr.cat .cnt{font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--muted); white-space:nowrap; margin-left:6px; flex:0 0 auto}
+td.dn{background:transparent!important}
+td.dn .inp.amt:not(:focus){color:var(--muted)!important; text-decoration:line-through}
+tr.item.isdone input[data-f="n"]:not(:focus){color:var(--muted); text-decoration:line-through}
+.prog{display:flex; align-items:center; gap:10px; margin:6px 0 8px; font-size:12px; color:var(--ink-2)}
+.pbar{flex:0 0 160px; height:6px; border-radius:3px; background:var(--grid); overflow:hidden}
+.pbar i{display:block; height:100%; background:var(--accent); border-radius:3px; transition:width .2s ease}
+.prog.all{color:var(--good-ink)} .prog.all .pbar i{background:var(--good)}
+table.multi td.c.dn{color:var(--muted)!important; background:transparent} table.multi td.c.dn::before{content:"✓ "; font-size:10px; color:var(--good-ink)}
+tr.item td:first-child{border-left:3px solid transparent}
+tr.item.k0 td:first-child{border-left-color:var(--k0)} tr.item.k1 td:first-child{border-left-color:var(--k1)}
+tr.item.k2 td:first-child{border-left-color:var(--k2)} tr.item.k3 td:first-child{border-left-color:var(--k3)}
+tr.item.k4 td:first-child{border-left-color:var(--k4)} tr.item.k5 td:first-child{border-left-color:var(--k5)}
+tr.item.k6 td:first-child{border-left-color:var(--k6)}
+tr.item:hover{background:var(--surface-2)}
+/* 사람별 열 색 (--pc 는 각 셀 style 로 지정) */
+td.pcol{background:color-mix(in oklab, var(--pc) 7%, transparent)}
+th.pcol{color:color-mix(in oklab, var(--pc) 80%, var(--ink)); background:color-mix(in oklab, var(--pc) 9%, transparent); border-radius:6px 6px 0 0}
+td.pcol .inp.amt, td.pcol.c{color:color-mix(in oklab, var(--pc) 70%, var(--ink))}
+.inp.amt::placeholder{color:var(--line)}
+.inp{font:inherit; width:100%; background:transparent; border:1px solid transparent; border-radius:6px; padding:5px 7px; color:var(--ink)}
+.inp:hover{border-color:var(--grid)}
+.inp:focus{border-color:var(--accent); background:var(--surface); outline:none}
+.inp.amt{text-align:right; font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; font-size:13.5px; font-weight:500}
+.inp.zero{color:var(--muted)}
+td.rt{text-align:right}
+.rowtot{font-size:12.5px; color:var(--ink-2); padding-right:8px}
+.inst{display:inline-flex; align-items:center; gap:2px; font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-2)}
+.inst input{width:2.4em; text-align:center; font:inherit; background:transparent; border:1px solid transparent; border-radius:5px; padding:3px 1px; color:inherit}
+.inst input:hover{border-color:var(--grid)}
+.inst input:focus{border-color:var(--accent); background:var(--surface); outline:none}
+.inst.done{color:var(--bad-ink)}
+.uninst{font:inherit; font-size:12px; line-height:1; color:var(--muted); background:none; border:none; border-radius:4px; padding:2px 4px; margin-left:2px; cursor:pointer; opacity:0}
+tr.item:hover .uninst, .uninst:focus{opacity:1}
+.uninst:hover{color:var(--bad-ink); background:var(--surface-2)}
+@media (hover:none){ .uninst{opacity:.6} }
+.addinst{font:inherit; font-size:11px; color:var(--muted); background:none; border:1px dashed var(--grid); border-radius:5px; padding:2px 6px; cursor:pointer; opacity:0}
+tr.item:hover .addinst, .addinst:focus{opacity:1}
+@media (hover:none){ .addinst{opacity:.55} }
+.del{background:none; border:none; color:var(--muted); cursor:pointer; font-size:15px; line-height:1; padding:4px 6px; border-radius:6px}
+.del:hover{color:var(--bad-ink); background:var(--surface-2)}
+.addrow td{padding-top:5px; padding-bottom:8px}
+.addbtn{font:inherit; font-size:11.5px; color:var(--accent); background:none; border:none; cursor:pointer; padding:3px 6px; border-radius:6px}
+.addbtn:hover{background:var(--accent-soft)}
+tr.income td{padding:8px; background:var(--surface-2); border-bottom:2px solid var(--line)}
+tr.income .cname{font-size:12px; font-weight:700; color:var(--ink)}
+tr.income .inp.amt{font-size:14.5px; font-weight:600}
+tr.tot td{padding:10px 8px; border-bottom:none; font-weight:600; font-size:13.5px}
+tr.tot td:first-child{border-left:3px solid transparent}
+.grpname{font:inherit; font-weight:600; font-size:13.5px; background:transparent; border:1px solid transparent; border-radius:5px; padding:3px 6px; color:var(--ink); width:100%; min-width:0}
+.grpname:hover{border-color:var(--grid)} .grpname:focus{outline:none; border-color:var(--accent); background:var(--surface)}
+.grpsub{font-size:10.5px; font-weight:400; color:var(--muted); display:inline-flex; align-items:center; gap:4px; white-space:nowrap; cursor:pointer}
+.grpsub input{accent-color:var(--accent); margin:0; width:13px; height:13px}
+.grpsel{font:inherit; font-size:11px; color:var(--muted); background:transparent; border:1px solid transparent; border-radius:5px; padding:2px 0; cursor:pointer; max-width:88px}
+.grpsel:hover{border-color:var(--grid); color:var(--ink)}
+tr.tot.grp .del{opacity:.35} tr.tot.grp:hover .del{opacity:1}
+tr.tot.grand td{border-top:2px solid var(--line); background:var(--accent-soft); font-size:15px; padding:13px 8px}
+tr.tot.grand td:first-child{font-weight:700}
+table.multi td.c{font-size:13px}
+table.multi td.alt{box-shadow:inset 0 0 0 100px color-mix(in oklab, var(--ink) 3.5%, transparent)}
+table.multi th.alt{background:color-mix(in oklab, var(--ink) 4%, transparent)}
+.save{font-size:11px; color:var(--muted); min-height:1.2em}
+
+/* ---------- charts ---------- */
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--ink-2); margin-bottom:6px}
+.legend i{font-style:normal; display:inline-flex; align-items:center; gap:5px}
+.chartbox{position:relative; overflow-x:auto}
+.chartbox svg{display:block; min-width:660px; width:100%; height:auto}
+.tip{position:absolute; pointer-events:none; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:11.5px; box-shadow:var(--shadow); white-space:nowrap; z-index:5}
+.tip b{display:block; font-size:12px; margin-bottom:4px}
+.tip div{display:flex; justify-content:space-between; gap:14px}
+.tip .num{margin-left:auto}
+
+/* ---------- loans ---------- */
+.loans{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px}
+.lgroup{margin-top:16px}
+.lhead .fx{font-size:11px; color:var(--muted); margin-right:8px}
+table.stocks{min-width:640px}
+table.stocks td{padding:3px 6px}
+table.stocks .inp{padding:5px 6px}
+table.stocks select{font:inherit; font-size:12px; background:transparent; border:1px solid transparent; border-radius:6px; color:var(--ink); padding:4px 4px}
+table.stocks select:hover{border-color:var(--grid)}
+table.stocks .upd{font-size:10.5px; color:var(--muted); white-space:nowrap}
+.addacct{display:inline-flex; gap:5px; align-items:center}
+table.stocks tr.acct td{padding:12px 6px 6px; border-bottom:1px solid var(--line); background:var(--surface-2)}
+table.stocks tr.acct .acctname{font:inherit; font-weight:700; font-size:12.5px; background:transparent; border:1px solid transparent; border-radius:5px; padding:2px 5px; color:var(--ink); width:100%; max-width:260px}
+table.stocks tr.acct .acctname:hover{border-color:var(--grid)} table.stocks tr.acct .acctname:focus{outline:none; border-color:var(--accent); background:var(--surface)}
+table.stocks tr.acct .asum{text-align:right; font-weight:600; font-size:12px}
+table.stocks tr.acct .addbtn{font-size:11px}
+.lhead{display:flex; align-items:center; gap:10px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--grid)}
+.lhead h3{font-size:12.5px; font-weight:700; margin:0; letter-spacing:.02em}
+.lhead .num{font-size:12px; color:var(--ink-2); margin-right:auto}
+.lhead .btn{padding:4px 9px; font-size:11.5px}
+.loan .m{flex-wrap:wrap; align-items:center; gap:6px 10px}
+.loan .m .lf{display:inline-flex; align-items:center; gap:3px; font-size:11px; color:var(--ink-2); white-space:nowrap}
+.loan .m .lf input{font:inherit; font-size:11.5px; font-family:"IBM Plex Mono",monospace; background:transparent; border:1px solid var(--grid); border-radius:5px; padding:2px 5px; color:var(--ink)}
+.loan .m .lf input:focus{outline:none; border-color:var(--accent)}
+.loan .m .lf input::placeholder{color:var(--line)}
+.loan .m select{margin-left:auto; font:inherit; font-size:11px; background:transparent; border:1px solid transparent; border-radius:5px; color:var(--ink-2); padding:1px 2px; cursor:pointer}
+.loan .m select:hover{border-color:var(--grid)}
+.loans:empty::after{content:"아직 없어요"; font-size:11.5px; color:var(--muted); padding:4px 2px}
+.loan{border:1px solid var(--ring); border-radius:10px; padding:12px 13px; background:var(--surface-2)}
+.loan .n{font-size:12.5px; font-weight:600; display:flex; align-items:center; gap:6px}
+.loan .a{font-size:18px; font-weight:500; margin-top:5px; letter-spacing:-.02em}
+.loan .m{font-size:11px; color:var(--ink-2); margin-top:6px; display:flex; justify-content:space-between; gap:8px}
+.loan .n input{font:inherit; font-weight:600; font-size:12.5px; background:transparent; border:1px solid transparent; border-radius:5px; padding:2px 5px; color:var(--ink); width:100%; min-width:0}
+.loan .n input:hover{border-color:var(--grid)} .loan .n input:focus{border-color:var(--accent); outline:none; background:var(--surface)}
+.loan .n .del{margin-left:auto}
+.loan .chg{font-size:11px; margin-top:2px; min-height:1.2em}
+.loan .chg.pos{color:var(--good-ink)} .loan .chg.neg{color:var(--bad-ink)} .loan .chg.flat{color:var(--muted)}
+.loan .delta{display:flex; align-items:center; gap:6px; margin-top:8px; font-size:11px; color:var(--ink-2); border-top:1px dashed var(--grid); padding-top:8px}
+.loan .delta input{width:110px; text-align:right; font-family:"IBM Plex Mono",monospace; font-size:12px; background:transparent; border:1px solid var(--grid); border-radius:5px; padding:3px 6px; color:var(--ink)}
+.loan .delta input:focus{border-color:var(--accent); outline:none}
+.bar{display:flex; gap:2px; height:13px; border-radius:4px; overflow:hidden; margin:14px 0 8px}
+.bar span{display:block}
+.note{font-size:11px; color:var(--muted); margin-top:12px}
+.err{background:var(--surface); border:1px solid var(--line); border-radius:11px; padding:18px; font-size:13px; color:var(--ink-2)}
+@media (prefers-reduced-motion: no-preference){ .chip,.btn{transition:background .12s ease, border-color .12s ease} }
+
+/* ---------- 앱 전용 ---------- */
+html,body,#root{min-height:100%}
+.center{min-height:80vh; display:flex; align-items:center; justify-content:center; padding:24px 16px}
+.authbox{max-width:420px; width:100%; text-align:center}
+.authbox h1{font-size:40px; margin:0 0 4px}
+.authbox .tag{color:var(--ink-2); margin:0 0 26px; font-size:14px}
+.gbtn{display:inline-flex; align-items:center; gap:10px; font:inherit; font-size:14px; font-weight:600; padding:11px 18px; border-radius:10px; border:1px solid var(--ring); background:var(--surface); color:var(--ink); cursor:pointer; box-shadow:var(--shadow)}
+.gbtn:hover{border-color:var(--line)}
+.gbtn svg{width:18px; height:18px}
+.onb{max-width:520px; margin:0 auto}
+.onb h2{font-size:18px; margin:0 0 4px}
+.onb p{color:var(--ink-2); font-size:13px; margin:0 0 16px}
+.field{display:flex; flex-direction:column; gap:5px; margin-bottom:12px}
+.field label{font-size:12px; color:var(--ink-2)}
+.field input{font:inherit; font-size:14px; padding:9px 11px; border:1px solid var(--grid); border-radius:9px; background:var(--surface); color:var(--ink)}
+.field input:focus{outline:none; border-color:var(--accent)}
+.row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.btn.big{font-size:13.5px; padding:9px 16px}
+.err-msg{color:var(--bad-ink); font-size:12.5px; margin-top:8px}
+.tabs{display:flex; gap:6px; margin-bottom:14px}
+.code{font-family:"IBM Plex Mono",monospace; font-size:22px; letter-spacing:.18em; font-weight:500; background:var(--surface-2); border:1px dashed var(--line); border-radius:10px; padding:10px 14px; display:inline-block}
+.menu{position:relative}
+.menu .panel{position:absolute; right:0; top:calc(100% + 6px); background:var(--surface); border:1px solid var(--ring); border-radius:10px; box-shadow:var(--shadow); min-width:220px; padding:6px; z-index:20}
+.menu .panel button{display:block; width:100%; text-align:left; font:inherit; font-size:13px; padding:8px 10px; border:none; background:none; color:var(--ink); border-radius:7px; cursor:pointer}
+.menu .panel button:hover{background:var(--surface-2)}
+.avatar{width:30px; height:30px; border-radius:50%; border:1px solid var(--ring); cursor:pointer; background:var(--surface-2); object-fit:cover}
+.pill{font-size:11px; padding:3px 8px; border-radius:99px; background:var(--accent-soft); color:var(--accent); font-weight:600}
+.persons .prow{display:flex; gap:8px; align-items:center; margin-bottom:8px}
+.persons .prow input{flex:1}
+.setting-sec{margin-bottom:22px}
+.setting-sec h3{font-size:13px; margin:0 0 8px}
+.toast{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom, 0px)); transform:translateX(-50%); background:var(--ink); color:var(--paper); font-size:12.5px; padding:8px 14px; border-radius:99px; z-index:60; pointer-events:none}
+.empty{padding:32px 16px; text-align:center; color:var(--ink-2); font-size:13.5px}
+.empty .btn{margin-top:10px}
+.modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:40; display:flex; align-items:flex-start; justify-content:center; padding:24px 12px; overflow:auto}
+.modal{background:var(--surface); border:1px solid var(--ring); border-radius:14px; box-shadow:var(--shadow); width:100%; max-width:560px; padding:18px 18px 22px; margin-top:env(safe-area-inset-top, 0px)}
+.modal a{color:var(--accent)}
