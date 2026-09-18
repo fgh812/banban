@@ -1,0 +1,16 @@
+name: Update stock prices
+on:
+  schedule:
+    - cron: '30 23 * * 1-5'
+  workflow_dispatch:
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install firebase-admin requests
+      - run: python scripts/update_stocks.py
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
