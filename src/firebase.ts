@@ -29,7 +29,15 @@ provider.setCustomParameters({ prompt: 'select_account' })
 export async function loginWithGoogle() {
   if (isNative) {
     // 앱(안드로이드/iOS): 네이티브 구글 로그인 → 같은 계정으로 JS SDK 도 로그인
-    const r = await FirebaseAuthentication.signInWithGoogle()
+    // 일부 기기(삼성 등)에서 Credential Manager 가 "[16] Account reauth failed" 를 내므로
+    // 기존 Google Sign-In 방식을 먼저 쓰고, 실패하면 Credential Manager 로 한 번 더 시도
+    let r
+    try { r = await FirebaseAuthentication.signInWithGoogle({ useCredentialManager: false }) }
+    catch (e1: any) {
+      if (/cancel/i.test(e1?.message || '')) return
+      try { r = await FirebaseAuthentication.signInWithGoogle({ useCredentialManager: true }) }
+      catch (e2: any) { if (/cancel/i.test(e2?.message || '')) return; throw e2 }
+    }
     const idToken = r.credential?.idToken
     if (!idToken) throw new Error('구글 로그인 정보를 받지 못했어요')
     await signInWithCredential(auth, GoogleAuthProvider.credential(idToken, r.credential?.accessToken))
