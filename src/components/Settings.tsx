@@ -107,7 +107,7 @@ export default function Settings({ session, onClose }: { session: Session; onClo
           <p className="hint" style={{ marginTop: 8 }}>계정을 삭제하면 로그인 정보가 지워져요. 가계부 데이터는 함께 쓰는 사람에게 남고, 아무도 없으면 접근할 수 없게 돼요.</p>
         </div>
 
-        <p className="hint" style={{ marginTop: 18 }}><a href="privacy.html" target="_blank" rel="noreferrer">개인정보 처리방침</a> · 반반 v0.1</p>
+        <p className="hint" style={{ marginTop: 18 }}><a href="privacy.html" target="_blank" rel="noreferrer">개인정보 처리방침</a> · 반반 {(import.meta as any).env?.VITE_BUILD || 'web'}</p>
         {msg && <div className="toast">{msg}</div>}
       </div>
     </div>

@@ -20,7 +20,7 @@ jobs:
       - run: npm ci
       - name: Build web (app 용, base '/')
         run: npm run build
-        env: { BASE_PATH: /, VITE_AI_URL: "${{ secrets.VITE_AI_URL }}" }
+        env: { BASE_PATH: /, VITE_AI_URL: "${{ secrets.VITE_AI_URL }}", VITE_BUILD: "${{ github.event.inputs.version }} (${{ github.run_number }})" }
       - name: Create Android project
         run: npx cap add android
       - name: Icons & splash

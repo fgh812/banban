@@ -17,7 +17,7 @@ export default function Login() {
           <GoogleIcon /> Google 계정으로 시작하기
         </button>
         {err && <div className="err-msg">{err}</div>}
-        <p style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 28 }}>가계부 데이터는 초대한 사람끼리만 볼 수 있어요.</p>
+        <p style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 28 }}>가계부 데이터는 초대한 사람끼리만 볼 수 있어요.<br /><span style={{ opacity: .6 }}>반반 {(import.meta as any).env?.VITE_BUILD || 'web'}</span></p>
       </div>
     </div>
   )
