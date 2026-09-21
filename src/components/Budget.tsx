@@ -12,6 +12,7 @@ import Loans from './Loans'
 import Settings from './Settings'
 import Insights from './Insights'
 import Goals from './Goals'
+import SectionTabs from './SectionTabs'
 
 type View = 'one' | 'multi'
 const SEC_DEFAULT = ['ledger', 'insights', 'goals', 'flow', 'loans']
@@ -147,6 +148,7 @@ export default function Budget({ session }: { session: Session }) {
       <Header session={session} cur={cur} onSettings={() => setSettingsOpen(true)} />
       <MonthRail keys={keys} cur={cur} onPick={k => setCur(k)} persons={persons} />
       <Tiles s={s} persons={persons} pcolors={pcolors} />
+      <SectionTabs order={order} />
       {order.map(id => sections[id])}
       {settingsOpen && <Settings session={session} onClose={() => setSettingsOpen(false)} />}
     </div>
