@@ -4,6 +4,7 @@ import { collection, doc, onSnapshot, setDoc, deleteDoc, type Unsubscribe } from
 import { useSyncExternalStore } from 'react'
 import { db } from './firebase'
 import { DEFAULT_CATS, DEFAULT_GROUPS, type MonthDoc, type Settings, type LoansDoc, type StocksDoc } from './types'
+import type { GoalsDoc } from './lib/insights'
 
 export interface DataState {
   hid: string | null
@@ -12,17 +13,19 @@ export interface DataState {
   settings: Settings
   loans: LoansDoc
   stocks: StocksDoc
+  goals: GoalsDoc
   saving: string       // 상태 표시 문구
 }
 
 const EMPTY_LOANS: LoansDoc = { items: [] }
 const EMPTY_STOCKS: StocksDoc = { holdings: [], accounts: [], fx: {} }
+const EMPTY_GOALS: GoalsDoc = { items: [] }
 const clone = <T,>(x: T): T => JSON.parse(JSON.stringify(x))
 
 let state: DataState = {
   hid: null, loaded: false, months: {},
   settings: { cats: clone(DEFAULT_CATS), groups: clone(DEFAULT_GROUPS) },
-  loans: clone(EMPTY_LOANS), stocks: clone(EMPTY_STOCKS), saving: '',
+  loans: clone(EMPTY_LOANS), stocks: clone(EMPTY_STOCKS), goals: clone(EMPTY_GOALS), saving: '',
 }
 const listeners = new Set<() => void>()
 const emit = () => listeners.forEach(l => l())
@@ -48,14 +51,14 @@ export async function loadMock(url: string) {
   const months: Record<string, MonthDoc> = {}
   Object.values(j.months as Record<string, any>).forEach((m: any) => { months[m.m] = normalizeMonth(m.m, m) })
   monthsLoaded = true
-  set({ hid: 'mock', loaded: true, months, settings: j.settings, loans: j.loans, stocks: j.stocks })
+  set({ hid: 'mock', loaded: true, months, settings: j.settings, loans: j.loans, stocks: j.stocks, goals: j.goals || clone(EMPTY_GOALS) })
 }
 export function subscribe(hid: string | null) {
   if (MOCK) return
   unsubs.forEach(u => u()); unsubs = []
   monthsLoaded = false
   Object.keys(dirty).forEach(k => { dirty[k] = false })
-  set({ hid, loaded: false, months: {}, settings: { cats: clone(DEFAULT_CATS), groups: clone(DEFAULT_GROUPS) }, loans: clone(EMPTY_LOANS), stocks: clone(EMPTY_STOCKS) })
+  set({ hid, loaded: false, months: {}, settings: { cats: clone(DEFAULT_CATS), groups: clone(DEFAULT_GROUPS) }, loans: clone(EMPTY_LOANS), stocks: clone(EMPTY_STOCKS), goals: clone(EMPTY_GOALS) })
   if (!hid) return
   const base = doc(db, 'households', hid)
   unsubs.push(onSnapshot(collection(base, 'months'), snap => {
@@ -83,6 +86,11 @@ export function subscribe(hid: string | null) {
     if (dirty['stocks'] || !s.exists()) return
     const b = s.data() as Partial<StocksDoc>
     set({ stocks: { holdings: clone(b.holdings || []), accounts: clone(b.accounts || []), fx: clone(b.fx || {}) } })
+  }))
+  unsubs.push(onSnapshot(doc(base, 'meta', 'goals'), s => {
+    if (dirty['goals'] || !s.exists()) return
+    const b = s.data() as Partial<GoalsDoc>
+    set({ goals: { items: Array.isArray(b.items) ? clone(b.items) : [] } })
   }))
 }
 
@@ -135,6 +143,9 @@ export function updateLoans(fn: (l: LoansDoc) => void) {
 }
 export function updateStocks(fn: (s: StocksDoc) => void) {
   const s = clone(state.stocks); fn(s); set({ stocks: s }); write('stocks', ['meta', 'stocks'], s)
+}
+export function updateGoals(fn: (g: GoalsDoc) => void) {
+  const g = clone(state.goals); fn(g); set({ goals: g }); write('goals', ['meta', 'goals'], g)
 }
 export function isMonthsLoaded() { return monthsLoaded }
 

@@ -3,7 +3,8 @@ import type { Group, Item, MonthDoc, Settings, Person, Loan, LoansDoc, StocksDoc
 export const won = (n: number) => '₩' + Math.round(n || 0).toLocaleString('ko-KR')
 export const wonShort = (n: number) => {
   const a = Math.abs(n)
-  if (a >= 10000000) return (n / 10000000).toFixed(a >= 100000000 ? 0 : 1).replace(/\.0$/, '') + '천만'
+  if (a >= 100000000) { const eok = Math.floor(a / 100000000), rest = Math.round((a % 100000000) / 10000); return (n < 0 ? '-' : '') + eok + '억' + (rest ? ' ' + rest.toLocaleString('ko-KR') + '만' : '') }
+  if (a >= 10000000) return (n / 10000000).toFixed(1).replace(/\.0$/, '') + '천만'
   if (a >= 10000) return Math.round(n / 10000).toLocaleString('ko-KR') + '만'
   return Math.round(n).toLocaleString('ko-KR')
 }
@@ -126,3 +127,11 @@ export function buildNextMonth(src: MonthDoc, key: string): MonthDoc {
 }
 
 export function groupLabel(g: Group) { return g.n }
+
+// 받침에 따라 조사 선택: josa('할부','은는') → '할부는', josa('적금','이가') → '적금이'
+export function josa(w: string, kind: '은는' | '이가' | '을를' | '과와') {
+  const c = w.charCodeAt(w.length - 1)
+  const hasFinal = c >= 0xac00 && c <= 0xd7a3 ? (c - 0xac00) % 28 !== 0 : /[0-9]/.test(w.slice(-1)) ? !/[2459]/.test(w.slice(-1)) : /[a-zA-Z]/.test(w.slice(-1)) ? /[lmnrLMNR]/.test(w.slice(-1)) : true
+  const [a, b] = kind === '은는' ? ['은', '는'] : kind === '이가' ? ['이', '가'] : kind === '을를' ? ['을', '를'] : ['과', '와']
+  return w + (hasFinal ? a : b)
+}

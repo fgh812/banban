@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { updateMonth, updateSettings, useData } from '../store'
 import { allDone, catGroup, catList, itemTotal, newId, slotCount, won, type Sums } from '../lib/util'
 import type { Item, MonthDoc, Person } from '../types'
@@ -17,7 +17,18 @@ export default function Ledger({ cur, mo, s, persons, pcolors }: Props) {
   const [newCatG, setNewCatG] = useState(settings.groups[0]?.id || 'fixed')
   const [armCat, setArmCat] = useState<string | null>(null)
   const [armGrp, setArmGrp] = useState<string | null>(null)
-  const nCols = 3 + pids.length + 1
+  const mobile = useMobile()
+  const nCols = (mobile ? 2 : 4) + pids.length
+  // 금액 열 폭: 이 달에 나오는 가장 긴 금액(콤마 포함) 자릿수 기준으로 동적 계산
+  const { amtW, sumW } = useMemo(() => {
+    let mx = 6, mxSum = 7
+    const len = (n: number) => won(n).length
+    pids.forEach(pid => { mx = Math.max(mx, len(mo.income?.[pid] || 0), len(s.net[pid] || 0), len(s.now[pid] || 0)); Object.values(s.g).forEach(v => { mx = Math.max(mx, len(v[pid] || 0)) }) })
+    mo.items.forEach(r => pids.forEach(pid => { mx = Math.max(mx, len(+(r.a?.[pid] || 0))) }))
+    mxSum = Math.max(mxSum, len(s.income), len(s.netAll), len(s.nowAll), mx)
+    const ch = mobile ? 7.2 : 8.2            // 모노 글꼴 한 글자 폭(px)
+    return { amtW: Math.ceil(mx * ch) + (mobile ? 26 : 44), sumW: Math.ceil(mxSum * 7.6) + 20 }
+  }, [mo, s, pids.join(','), mobile])
 
   const catIndex = (c: string) => cats.indexOf(c) % 7
   const grpOf = (c: string, rows: Item[]) => { const g = catGroup(settings, c) || rows[0]?.g || settings.groups[0].id; return settings.groups.some(x => x.id === g) ? g : settings.groups[0].id }
@@ -110,40 +121,48 @@ export default function Ledger({ cur, mo, s, persons, pcolors }: Props) {
 
   return (
     <div className="scroll">
-      <table className="led" ref={tableRef}>
+      <table className="led" ref={tableRef} style={{ tableLayout: 'fixed' }}>
+        <colgroup>
+          <col /><col style={{ width: mobile ? 44 : 92 }} />
+          {persons.map(p => <col key={p.id} style={{ width: amtW }} />)}
+          {!mobile && <col style={{ width: sumW }} />}{!mobile && <col style={{ width: 34 }} />}
+        </colgroup>
         <thead><tr>
-          <th className="l">항목</th><th className="l" style={{ width: 92 }}>회차</th>
-          {persons.map(p => <th key={p.id} className="pcol" style={{ width: (58 / persons.length) + '%', ...pc(p.id) }}>{p.name}</th>)}
-          <th style={{ width: '14%' }}>합계</th><th style={{ width: 34 }}></th>
+          <th className="l">항목</th><th className="l">회차</th>
+          {persons.map(p => <th key={p.id} className="pcol" style={pc(p.id)}>{p.name}</th>)}
+          {!mobile && <th>합계</th>}{!mobile && <th></th>}
         </tr></thead>
         <tbody>
           <tr className="income">
             <td className="cname">월급</td><td></td>
             {persons.map(p => <td key={p.id} className="pcol" style={pc(p.id)}><AmountInput value={mo.income?.[p.id] || 0} onChange={n => setIncome(p.id, n)} ariaLabel={p.name + ' 월급'} /></td>)}
-            <td className="rt num rowtot">{won(s.income)}</td><td></td>
+            {!mobile && <td className="rt num rowtot">{won(s.income)}</td>}{!mobile && <td></td>}
           </tr>
 
           {cats.map(c => {
             const rows = mo.items.filter(r => r.c === c)
             const ci = catIndex(c), sl = slotCount(rows, pids), gid = grpOf(c, rows)
             const ct = rows.reduce((a, r) => a + itemTotal(r), 0)
+            const catDel = <button className="del catdel" style={armCat === c ? { opacity: 1, color: '#fff', background: 'var(--bad)', fontSize: 11, padding: '4px 8px', whiteSpace: 'nowrap' } : undefined} onClick={() => delCat(c)} aria-label="분류 삭제">{armCat === c ? (mobile ? rows.length + '개 지우기' : '항목 ' + rows.length + '개와 함께 지우기') : '×'}</button>
             return [
               <tr key={'c' + c} className={'cat k' + ci} data-cat={c}>
                 <td className="cname"><span className="namecell">
                   <span className="cgrab grab" title="끌어서 분류 옮기기" aria-hidden="true">⠿</span>
                   <TextInput className="catname" value={c} onCommit={v => renameCat(c, v)} ariaLabel="분류 이름" />
                   <span className="cnt">{sl.n ? sl.d + '/' + sl.n : ''}</span>
+                  {mobile && catDel}
                 </span></td>
                 <td><select className="grpsel" value={gid} onChange={e => setCatGroup(c, e.target.value)} aria-label="지출 묶음">{settings.groups.map(g => <option key={g.id} value={g.id}>{g.n}</option>)}</select></td>
                 {persons.map(p => <td key={p.id}></td>)}
-                <td className="csum num">{won(ct)}</td>
-                <td className="rt"><button className="del catdel" style={armCat === c ? { opacity: 1, color: '#fff', background: 'var(--bad)', fontSize: 11, padding: '4px 8px', whiteSpace: 'nowrap' } : undefined} onClick={() => delCat(c)} aria-label="분류 삭제">{armCat === c ? '항목 ' + rows.length + '개와 함께 지우기' : '×'}</button></td>
+                {!mobile && <td className="csum num">{won(ct)}</td>}
+                {!mobile && <td className="rt">{catDel}</td>}
               </tr>,
               ...rows.map(r => (
                 <tr key={r.id} className={'item k' + ci + (allDone(r, pids) ? ' isdone' : '')} data-row={r.id} data-cat={c}>
                   <td><span className="namecell">
                     <span className="grab" title="끌어서 옮기기" aria-hidden="true">⠿</span>
                     <TextInput className="inp" value={r.n} onCommit={v => setName(r.id, v)} ariaLabel="항목 이름" placeholder="항목 이름" style={{ flex: 1 }} {...({ 'data-name': r.id } as any)} />
+                    {mobile && <button className="del mdel" onClick={() => delItem(r.id)} aria-label="삭제" title="삭제">×</button>}
                   </span></td>
                   <td>{r.cur != null && r.tot != null
                     ? <span className={'inst' + (+r.cur >= +r.tot ? ' done' : '')}>
@@ -160,8 +179,8 @@ export default function Ledger({ cur, mo, s, persons, pcolors }: Props) {
                       </span></td>
                     )
                   })}
-                  <td className="rt num rowtot">{won(itemTotal(r))}</td>
-                  <td className="rt"><button className="del" onClick={() => delItem(r.id)} aria-label="삭제" title="삭제">×</button></td>
+                  {!mobile && <td className="rt num rowtot">{won(itemTotal(r))}</td>}
+                  {!mobile && <td className="rt"><button className="del" onClick={() => delItem(r.id)} aria-label="삭제" title="삭제">×</button></td>}
                 </tr>
               )),
               <tr key={'a' + c} className="addrow" data-cat={c}><td colSpan={nCols}><button className="addbtn" onClick={() => addItem(c)}>＋ {c} 항목</button></td></tr>,
@@ -177,14 +196,16 @@ export default function Ledger({ cur, mo, s, persons, pcolors }: Props) {
           {settings.groups.map(g => {
             const v = s.g[g.id] || {}
             const tot = Object.values(v).reduce((a, b) => a + b, 0)
+            const grpDel = settings.groups.length > 1 ? <button className="del" style={armGrp === g.id ? { color: 'var(--bad-ink)', fontSize: 11 } : undefined} onClick={() => delGroup(g.id)} aria-label="묶음 삭제">{armGrp === g.id ? '지우기?' : '×'}</button> : null
             return (
               <tr key={g.id} className="tot grp" data-gid={g.id}>
                 <td><span className="namecell"><span className="ggrab grab" title="끌어서 순서 바꾸기" aria-hidden="true">⠿</span>
-                  <TextInput className="grpname" value={g.n} onCommit={n => renameGroup(g.id, n)} ariaLabel="묶음 이름" {...({ 'data-grp': g.id } as any)} /></span></td>
+                  <TextInput className="grpname" value={g.n} onCommit={n => renameGroup(g.id, n)} ariaLabel="묶음 이름" {...({ 'data-grp': g.id } as any)} />
+                  {mobile && grpDel}</span></td>
                 <td><label className="grpsub" title="켜면 남는 돈에서 이 묶음을 빼요. 끄면 따로만 집계돼요."><input type="checkbox" checked={g.sub !== false} onChange={e => setGroupSub(g.id, e.target.checked)} /> 남는돈 반영</label></td>
                 {persons.map(p => <td key={p.id} className="rt num pcol" style={pc(p.id)}>{won(v[p.id] || 0)}</td>)}
-                <td className="rt num">{won(tot)}</td>
-                <td className="rt">{settings.groups.length > 1 && <button className="del" style={armGrp === g.id ? { color: 'var(--bad-ink)', fontSize: 11 } : undefined} onClick={() => delGroup(g.id)} aria-label="묶음 삭제">{armGrp === g.id ? '지우기?' : '×'}</button>}</td>
+                {!mobile && <td className="rt num">{won(tot)}</td>}
+                {!mobile && <td className="rt">{grpDel}</td>}
               </tr>
             )
           })}
@@ -193,17 +214,24 @@ export default function Ledger({ cur, mo, s, persons, pcolors }: Props) {
           <tr className="tot grand">
             <td>남는 돈</td><td></td>
             {persons.map(p => <td key={p.id} className="rt num" style={{ color: (s.net[p.id] || 0) >= 0 ? 'var(--good-ink)' : 'var(--bad-ink)' }}>{won(s.net[p.id] || 0)}</td>)}
-            <td className="rt num" style={{ color: s.netAll >= 0 ? 'var(--good-ink)' : 'var(--bad-ink)' }}>{won(s.netAll)}</td><td></td>
+            {!mobile && <td className="rt num" style={{ color: s.netAll >= 0 ? 'var(--good-ink)' : 'var(--bad-ink)' }}>{won(s.netAll)}</td>}{!mobile && <td></td>}
           </tr>
           <tr className="tot now">
             <td>지금 남은 돈 <span className="sub">체크한 지출만 뺌</span></td><td></td>
             {persons.map(p => <td key={p.id} className="rt num">{won(s.now[p.id] || 0)}</td>)}
-            <td className="rt num">{won(s.nowAll)}</td><td></td>
+            {!mobile && <td className="rt num">{won(s.nowAll)}</td>}{!mobile && <td></td>}
           </tr>
         </tbody>
       </table>
     </div>
   )
+}
+
+function useMobile() {
+  const q = '(max-width: 600px)'
+  const [m, setM] = useState(() => typeof matchMedia !== 'undefined' && matchMedia(q).matches)
+  useEffect(() => { const mq = matchMedia(q); const f = () => setM(mq.matches); mq.addEventListener('change', f); return () => mq.removeEventListener('change', f) }, [])
+  return m
 }
 
 function InstInput({ value, onCommit, label }: { value: number; onCommit: (n: number) => void; label: string }) {

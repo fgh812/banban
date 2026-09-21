@@ -10,9 +10,11 @@ import MultiView from './MultiView'
 import FlowChart from './FlowChart'
 import Loans from './Loans'
 import Settings from './Settings'
+import Insights from './Insights'
+import Goals from './Goals'
 
 type View = 'one' | 'multi'
-const SEC_DEFAULT = ['ledger', 'flow', 'loans']
+const SEC_DEFAULT = ['ledger', 'insights', 'goals', 'flow', 'loans']
 
 function loadPref<T>(key: string, fallback: T): T { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback } catch { return fallback } }
 function savePref(key: string, v: unknown) { try { localStorage.setItem(key, JSON.stringify(v)) } catch {} }
@@ -26,7 +28,7 @@ export default function Budget({ session }: { session: Session }) {
   const [view, setView] = useState<View>(() => loadPref('view', 'one'))
   const [range, setRange] = useState<number>(() => loadPref('range', 6))
   const [combine, setCombine] = useState<boolean>(() => loadPref('combine', false))
-  const [order, setOrder] = useState<string[]>(() => { const o = loadPref<string[]>('sec-order', SEC_DEFAULT); return o.length === 3 && SEC_DEFAULT.every(x => o.includes(x)) ? o : SEC_DEFAULT })
+  const [order, setOrder] = useState<string[]>(() => { const o = loadPref<string[]>('sec-order', SEC_DEFAULT); const missing = SEC_DEFAULT.filter(x => !o.includes(x)); const merged = [...o.filter(x => SEC_DEFAULT.includes(x)), ...missing]; return merged.length === SEC_DEFAULT.length ? merged : SEC_DEFAULT })
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [armDel, setArmDel] = useState(false)
 
@@ -115,6 +117,18 @@ export default function Budget({ session }: { session: Session }) {
         {view === 'one'
           ? <Ledger cur={cur} mo={mo} s={s} persons={persons} pcolors={pcolors} />
           : <MultiView keys={keys} cur={cur} range={range} combine={combine} persons={persons} pcolors={pcolors} onJump={k => { setCur(k); setView('one') }} />}
+      </section>
+    ),
+    insights: (
+      <section className="card" key="insights" data-sec="insights">
+        <SecMove id="insights" order={order} onMove={moveSec} />
+        <Insights cur={cur} keys={keys} view={view} range={range} persons={persons} />
+      </section>
+    ),
+    goals: (
+      <section className="card" key="goals" data-sec="goals">
+        <SecMove id="goals" order={order} onMove={moveSec} />
+        <Goals cur={cur} keys={keys} persons={persons} />
       </section>
     ),
     flow: (
