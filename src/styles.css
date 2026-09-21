@@ -38,7 +38,8 @@ body{
   font-family:"IBM Plex Sans KR", system-ui, -apple-system, sans-serif;
   font-size:14px; line-height:1.5;
 }
-.wrap{max-width:1180px; margin:0 auto; padding:0 16px; padding-block:14px 64px}
+:root{ --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px) }
+.wrap{max-width:1180px; margin:0 auto; padding:0 16px; padding-block:calc(14px + var(--sat)) calc(64px + var(--sab))}
 .num{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums}
 
 /* ---------- header ---------- */
@@ -323,7 +324,7 @@ html,body,#root{min-height:100%}
 .toast{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom, 0px)); transform:translateX(-50%); background:var(--ink); color:var(--paper); font-size:12.5px; padding:8px 14px; border-radius:99px; z-index:60; pointer-events:none}
 .empty{padding:32px 16px; text-align:center; color:var(--ink-2); font-size:13.5px}
 .empty .btn{margin-top:10px}
-.modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:40; display:flex; align-items:flex-start; justify-content:center; padding:24px 12px; overflow:auto}
+.modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:40; display:flex; align-items:flex-start; justify-content:center; padding:calc(24px + var(--sat)) 12px calc(24px + var(--sab)); overflow:auto}
 .modal{background:var(--surface); border:1px solid var(--ring); border-radius:14px; box-shadow:var(--shadow); width:100%; max-width:560px; padding:18px 18px 22px; margin-top:env(safe-area-inset-top, 0px)}
 .modal a{color:var(--accent)}
 
@@ -422,10 +423,11 @@ input[type=range]{accent-color:var(--accent)}
 @media (max-width:600px){ .sechead{margin:-12px -8px 10px; padding:10px 8px 8px; border-radius:10px 10px 0 0} }
 
 /* ---------- 섹션 탭 바 (화면 위 고정) ---------- */
-.sectabs{position:sticky; top:0; z-index:6; display:flex; gap:0; background:var(--paper); border-bottom:1px solid var(--line); margin:0 -16px 16px; padding:0 8px; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch}
+.sectabs{position:sticky; top:var(--sat); z-index:6; display:flex; gap:0; background:var(--paper); border-bottom:1px solid var(--line); margin:0 -16px 16px; padding:0 8px; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch}
 .sectabs::-webkit-scrollbar{display:none}
+.sectabs::before{content:''; position:absolute; left:0; right:0; bottom:100%; height:var(--sat); background:var(--paper)}
 .sectabs button{flex:1 0 auto; font:inherit; font-size:14px; font-weight:500; color:var(--muted); background:none; border:none; border-bottom:2.5px solid transparent; padding:13px 14px 11px; cursor:pointer; white-space:nowrap; letter-spacing:-.01em}
 .sectabs button[aria-selected="true"]{color:var(--ink); font-weight:700; border-bottom-color:var(--ink)}
 .sectabs button:hover{color:var(--ink)}
-[data-sec]{scroll-margin-top:52px}
+[data-sec]{scroll-margin-top:calc(52px + var(--sat))}
 @media (max-width:600px){ .sectabs{margin:0 -8px 12px; padding:0 2px} .sectabs button{font-size:13.5px; padding:12px 10px 10px} }
