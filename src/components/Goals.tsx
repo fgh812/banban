@@ -6,9 +6,9 @@ import { label, newId, won, wonShort, parseNum } from '../lib/util'
 import type { Person } from '../types'
 import AmountInput, { TextInput } from './AmountInput'
 
-interface Props { cur: string; keys: string[]; persons: Person[] }
+interface Props { cur: string; keys: string[]; persons: Person[]; tools?: React.ReactNode }
 
-export default function Goals({ cur, keys, persons }: Props) {
+export default function Goals({ cur, keys, persons, tools }: Props) {
   const { goals, months, settings, loans, stocks } = useData()
   const [adding, setAdding] = useState(false)
   const items = goals.items
@@ -19,9 +19,9 @@ export default function Goals({ cur, keys, persons }: Props) {
 
   return (
     <div className="goals">
-      <div className="ledhead" style={{ marginBottom: 6 }}>
+      <div className="ledhead sechead" style={{ marginBottom: 6 }}>
         <div><h2 style={{ margin: 0 }}>목표</h2><p className="hint" style={{ margin: 0 }}>목표액과 기간을 정하면 매달 얼마씩 모아야 하는지, 지금 페이스로 언제 닿는지 계산해요.</p></div>
-        {!adding && <button className="btn primary" onClick={() => setAdding(true)}>＋ 목표 추가</button>}
+        <span className="row" style={{ gap: 7 }}>{!adding && <button className="btn primary" onClick={() => setAdding(true)}>＋ 목표 추가</button>}{tools}</span>
       </div>
       {adding && <GoalForm cur={cur} onSave={add} onCancel={() => setAdding(false)} />}
       {!items.length && !adding && <div className="empty" style={{ padding: '18px 0 6px', fontSize: 13, color: 'var(--muted)' }}>예: 「1억 모으기 · 1년」 「전세 보증금 5천 · 2년」</div>}

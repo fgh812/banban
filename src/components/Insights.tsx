@@ -5,9 +5,9 @@ import { aiEnabled, askAI } from '../ai'
 import type { Person } from '../types'
 import { label, wonShort } from '../lib/util'
 
-interface Props { cur: string; keys: string[]; view: 'one' | 'multi'; range: number; persons: Person[] }
+interface Props { cur: string; keys: string[]; view: 'one' | 'multi'; range: number; persons: Person[]; tools?: React.ReactNode }
 
-export default function Insights({ cur, keys, view, range, persons }: Props) {
+export default function Insights({ cur, keys, view, range, persons, tools }: Props) {
   const { months, settings, loans, stocks, goals } = useData()
   const rangeKeys = useMemo(() => {
     if (view === 'one') return [cur]
@@ -36,9 +36,9 @@ export default function Insights({ cur, keys, view, range, persons }: Props) {
   const title = view === 'one' ? label(cur) + ' 분석' : `${rangeKeys.length}개월 흐름 분석`
   return (
     <div className="insights">
-      <div className="inshead">
+      <div className="inshead sechead">
         <h3>{title}</h3>
-        {aiEnabled() && <button className="btn aibtn" disabled={busy} onClick={runAI}>{busy ? '분석 중…' : ai?.key === aiKey ? 'AI 코멘트 다시 받기' : '✦ AI 코멘트 받기'}</button>}
+        <span className="row" style={{ gap: 7 }}>{aiEnabled() && <button className="btn aibtn" disabled={busy} onClick={runAI}>{busy ? '분석 중…' : ai?.key === aiKey ? 'AI 코멘트 다시 받기' : '✦ AI 코멘트 받기'}</button>}{tools}</span>
       </div>
       {result.trend && <TrendBars t={result.trend} />}
       <ul className="inslist">

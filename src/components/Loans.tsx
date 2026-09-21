@@ -7,7 +7,7 @@ import AmountInput, { TextInput } from './AmountInput'
 const KIND_LABEL: Record<LoanKind, string> = { debt: '대출', saving: '적금', asset: '자산' }
 const HUES = ['var(--tae)', 'var(--ye)', 'var(--net)']
 
-export default function Loans({ cur, keys }: { cur: string; keys: string[] }) {
+export default function Loans({ cur, keys, tools }: { cur: string; keys: string[]; tools?: React.ReactNode }) {
   const { loans, stocks } = useData()
   const t = loanTotals(loans, stocks, cur)
   const debts = loans.items.filter(x => x.kind === 'debt')
@@ -24,8 +24,8 @@ export default function Loans({ cur, keys }: { cur: string; keys: string[] }) {
 
   return (
     <>
-      <h2>대출과 자산</h2>
-      <p className="hint">{label(cur)} 기준 · 부채 {won(t.debt)} · 적금 {won(t.saving)} · 자산 {won(t.asset)}{t.stock ? ' · 주식 ' + won(t.stock) : ''}</p>
+      <div className="sechead"><div><h2>대출과 자산</h2>
+      <p className="hint" style={{ margin: 0 }}>{label(cur)} 기준 · 부채 {won(t.debt)} · 적금 {won(t.saving)} · 자산 {won(t.asset)}{t.stock ? ' · 주식 ' + won(t.stock) : ''}</p></div>{tools}</div>
       {debts.length > 0 && <div className="bar">{debts.map((d, i) => <span key={d.id} style={{ flex: Math.max(1, balanceAt(d, cur)), background: HUES[i % 3] }} title={d.name} />)}</div>}
 
       {(['debt', 'saving', 'asset'] as LoanKind[]).map(kind => {

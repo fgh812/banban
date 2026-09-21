@@ -65,10 +65,9 @@ h1{font-family:"Gowun Batang", Georgia, serif; font-weight:700; font-size:27px; 
 
 /* ---------- cards ---------- */
 .card{background:var(--surface); border:1px solid var(--ring); border-radius:13px; box-shadow:var(--shadow); padding:16px 16px 18px; margin-bottom:16px}
-.card > h2{font-size:13px; font-weight:600; margin:0 0 2px; letter-spacing:-.005em}
+.card h2{font-size:13px; font-weight:600; margin:0 0 2px; letter-spacing:-.005em}
 .card{position:relative}
-.secmove{position:absolute; top:12px; right:14px; display:inline-flex; gap:2px}
-.secmove.inline{position:static}
+.secmove{display:inline-flex; gap:2px; flex:0 0 auto}
 .mv{font:inherit; font-size:10px; line-height:1; color:var(--muted); background:var(--surface-2); border:1px solid var(--ring); border-radius:5px; padding:5px 6px; cursor:pointer}
 .mv:hover{color:var(--ink); border-color:var(--line)} .mv[disabled]{opacity:.3; cursor:default}
 .card > .hint{font-size:11.5px; color:var(--muted); margin:0 0 14px}
@@ -411,3 +410,13 @@ html,body,#root{min-height:100%}
 .scentbl td.ok{color:var(--good-ink)} .scentbl td.late{color:var(--bad-ink)}
 input[type=range]{accent-color:var(--accent)}
 @media (max-width:600px){ .inshead{padding-right:56px} .goal{padding:10px 9px} }
+
+/* ---------- 카드 헤더 고정: 스크롤해도 제목·이동 버튼이 위에 붙어 있음 ---------- */
+.sechead{position:sticky; top:0; z-index:4; background:var(--surface); display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;
+  margin:-16px -16px 12px; padding:12px 16px 9px; border-bottom:1px solid var(--grid); border-radius:13px 13px 0 0}
+.sechead h2, .sechead h3{margin:0}
+.sechead .hint{margin:0}
+.ledhead.sechead{margin-bottom:12px}
+.ledhead.sechead > div:first-child > .hint{display:none}  /* 고정 헤더는 간결하게 */
+.inshead.sechead{padding-right:16px}
+@media (max-width:600px){ .sechead{margin:-12px -8px 10px; padding:10px 8px 8px; border-radius:10px 10px 0 0} }

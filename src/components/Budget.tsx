@@ -91,7 +91,7 @@ export default function Budget({ session }: { session: Session }) {
   const sections: Record<string, React.ReactNode> = {
     ledger: (
       <section className="card" key="ledger" data-sec="ledger">
-        <div className="ledhead">
+        <div className="ledhead sechead">
           <div style={{ minWidth: 0 }}>
             <h2 id="ledtitle">{view === 'multi' ? '여러 달 나란히' : label(cur) + (mo.note ? '  ·  ' + mo.note : '')}</h2>
             {view === 'one' && <Progress s={s} />}
@@ -121,28 +121,23 @@ export default function Budget({ session }: { session: Session }) {
     ),
     insights: (
       <section className="card" key="insights" data-sec="insights">
-        <SecMove id="insights" order={order} onMove={moveSec} />
-        <Insights cur={cur} keys={keys} view={view} range={range} persons={persons} />
+        <Insights cur={cur} keys={keys} view={view} range={range} persons={persons} tools={<SecMove id="insights" order={order} onMove={moveSec} inline />} />
       </section>
     ),
     goals: (
       <section className="card" key="goals" data-sec="goals">
-        <SecMove id="goals" order={order} onMove={moveSec} />
-        <Goals cur={cur} keys={keys} persons={persons} />
+        <Goals cur={cur} keys={keys} persons={persons} tools={<SecMove id="goals" order={order} onMove={moveSec} inline />} />
       </section>
     ),
     flow: (
       <section className="card" key="flow" data-sec="flow">
-        <SecMove id="flow" order={order} onMove={moveSec} />
-        <h2>월별 흐름</h2>
-        <p className="hint">수입과 지출, 그리고 남는 돈(모두 합계).</p>
+        <div className="sechead"><div><h2>월별 흐름</h2><p className="hint" style={{ margin: 0 }}>수입과 지출, 그리고 남는 돈(모두 합계).</p></div><SecMove id="flow" order={order} onMove={moveSec} inline /></div>
         <FlowChart keys={keys} persons={persons} />
       </section>
     ),
     loans: (
       <section className="card" key="loans" data-sec="loans">
-        <SecMove id="loans" order={order} onMove={moveSec} />
-        <Loans cur={cur} keys={keys} />
+        <Loans cur={cur} keys={keys} tools={<SecMove id="loans" order={order} onMove={moveSec} inline />} />
       </section>
     ),
   }
