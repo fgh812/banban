@@ -236,9 +236,10 @@ table.multi th.alt{background:color-mix(in oklab, var(--ink) 4%, transparent)}
 /* ---------- charts ---------- */
 .legend{display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--ink-2); margin-bottom:6px}
 .legend i{font-style:normal; display:inline-flex; align-items:center; gap:5px}
-.chartbox{position:relative; overflow-x:auto}
+.chartbox{position:relative; overflow:hidden}
+.chartbox .cs{overflow-x:auto; overflow-y:hidden}
 .chartbox svg{display:block; min-width:660px; width:100%; height:auto}
-.tip{position:absolute; pointer-events:none; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:11.5px; box-shadow:var(--shadow); white-space:nowrap; z-index:5}
+.tip{position:absolute; pointer-events:none; max-width:calc(100% - 8px); background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:11.5px; box-shadow:var(--shadow); white-space:nowrap; z-index:5}
 .tip b{display:block; font-size:12px; margin-bottom:4px}
 .tip div{display:flex; justify-content:space-between; gap:14px}
 .tip .num{margin-left:auto}

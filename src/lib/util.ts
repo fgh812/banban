@@ -8,6 +8,14 @@ export const wonShort = (n: number) => {
   if (a >= 10000) return Math.round(n / 10000).toLocaleString('ko-KR') + '만'
   return Math.round(n).toLocaleString('ko-KR')
 }
+// 그래프 축용 짧은 표기: 2.5억 / 3천만 / 850만
+export const wonAxis = (n: number) => {
+  const a = Math.abs(n), sg = n < 0 ? '-' : ''
+  if (a >= 100000000) return sg + (a / 100000000).toFixed(a >= 1000000000 ? 0 : 1).replace(/\.0$/, '') + '억'
+  if (a >= 10000000) return sg + (a / 10000000).toFixed(1).replace(/\.0$/, '') + '천만'
+  if (a >= 10000) return sg + Math.round(a / 10000).toLocaleString('ko-KR') + '만'
+  return Math.round(n).toLocaleString('ko-KR')
+}
 export const fmtIn = (v?: number) => (!v ? '' : (+v).toLocaleString('ko-KR'))
 export const parseNum = (v: string) => { const n = parseInt(String(v).replace(/[^0-9-]/g, ''), 10); return isNaN(n) ? 0 : n }
 export const parseDec = (v: string) => { const n = parseFloat(String(v).replace(/[^0-9.-]/g, '')); return isNaN(n) ? 0 : n }

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { updateLoans, updateStocks, useData } from '../store'
-import { balanceAt, label, loanTotals, newId, parseDec, short, stockTotal, stockValue, won, wonShort } from '../lib/util'
+import { balanceAt, label, loanTotals, newId, parseDec, short, stockTotal, stockValue, won, wonShort, wonAxis } from '../lib/util'
 import type { Holding, Loan, LoanKind } from '../types'
 import AmountInput, { TextInput } from './AmountInput'
 
@@ -154,7 +154,7 @@ function Stocks() {
 function LoanChart({ keys }: { keys: string[] }) {
   const { loans, stocks } = useData()
   const box = useRef<HTMLDivElement>(null)
-  const [tip, setTip] = useState<{ i: number; x: number; y: number } | null>(null)
+  const [tip, setTip] = useState<{ i: number; x: number; y: number; w: number } | null>(null)
   if (!keys.length) return null
   const W = 940, H = 220, L = 66, R = 92, T = 16, B = 40
   const data = keys.map(k => { const t = loanTotals(loans, stocks, k); return { k, debt: t.debt, asset: t.plus } })
@@ -174,18 +174,18 @@ function LoanChart({ keys }: { keys: string[] }) {
         <i><span className="dot" style={{ ['--pc' as any]: 'var(--asset)' }} />적금 + 자산 + 주식</i>
       </div>
       <div className="chartbox" ref={box}>
-        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="월별 총 부채·총 자산 추이" onMouseLeave={() => setTip(null)}
-          onMouseMove={e => { const t = e.target as SVGElement; if (!t.classList?.contains('hit')) return; const r = box.current!.getBoundingClientRect(); setTip({ i: +t.getAttribute('data-i')!, x: e.clientX - r.left + box.current!.scrollLeft, y: e.clientY - r.top }) }}>
-          {ticks.map(v => <g key={v}><line x1={L} y1={y(v).toFixed(1)} x2={W - R} y2={y(v).toFixed(1)} stroke={v === 0 ? 'var(--line)' : 'var(--grid)'} /><text x={L - 9} y={(y(v) + 4).toFixed(1)} textAnchor="end" fontSize={11} fill="var(--muted)" fontFamily="IBM Plex Mono, monospace">{v === 0 ? '0' : wonShort(v)}</text></g>)}
+        <div className="cs"><svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="월별 총 부채·총 자산 추이" onMouseLeave={() => setTip(null)}
+          onMouseMove={e => { const t = e.target as SVGElement; if (!t.classList?.contains('hit')) return; const r = box.current!.getBoundingClientRect(); setTip({ i: +t.getAttribute('data-i')!, x: e.clientX - r.left, y: e.clientY - r.top, w: r.width }) }}>
+          {ticks.map(v => <g key={v}><line x1={L} y1={y(v).toFixed(1)} x2={W - R} y2={y(v).toFixed(1)} stroke={v === 0 ? 'var(--line)' : 'var(--grid)'} /><text x={L - 9} y={(y(v) + 4).toFixed(1)} textAnchor="end" fontSize={11} fill="var(--muted)" fontFamily="IBM Plex Mono, monospace">{v === 0 ? '0' : wonAxis(v)}</text></g>)}
           {data.map((d, i) => (data.length > 10 && i % 2 === 1) ? null : <text key={d.k} x={x(i).toFixed(1)} y={H - B + 17} textAnchor="middle" fontSize={10.5} fill="var(--muted)" fontFamily="IBM Plex Mono, monospace">{short(d.k)}</text>)}
           {series.map(([key, col, name]) => { const last = data[data.length - 1]; return <g key={key}>
             <polyline fill="none" stroke={col} strokeWidth={2} strokeLinejoin="round" points={data.map((d, i) => x(i).toFixed(1) + ',' + y(d[key] as number).toFixed(1)).join(' ')} />
             <circle cx={x(data.length - 1).toFixed(1)} cy={y(last[key] as number).toFixed(1)} r={4} fill={col} stroke="var(--surface)" strokeWidth={2} />
-            <text x={(x(data.length - 1) + 9).toFixed(1)} y={(y(last[key] as number) + 4).toFixed(1)} fontSize={11} fill="var(--ink-2)" fontFamily="IBM Plex Mono, monospace">{name.split('+')[0]} {wonShort(last[key] as number)}</text>
+            <text x={(x(data.length - 1) + 9).toFixed(1)} y={(y(last[key] as number) + 4).toFixed(1)} fontSize={11} fill="var(--ink-2)" fontFamily="IBM Plex Mono, monospace">{name.split('+')[0]} {wonAxis(last[key] as number)}</text>
           </g> })}
           {data.map((_, i) => { const x0 = i === 0 ? L : (x(i - 1) + x(i)) / 2, x1 = i === data.length - 1 ? W - R : (x(i) + x(i + 1)) / 2; return <rect key={'h' + i} className="hit" data-i={i} x={x0.toFixed(1)} y={T} width={(x1 - x0).toFixed(1)} height={ph} fill="transparent" /> })}
-        </svg>
-        {tip && (() => { const d = data[tip.i]; return <div className="tip" style={{ left: Math.max(4, tip.x + 14), top: Math.max(4, tip.y - 10) }}>
+        </svg></div>
+        {tip && (() => { const d = data[tip.i]; return <div className="tip" style={tip.x > tip.w / 2 ? { right: Math.max(4, tip.w - tip.x + 14), top: Math.max(4, tip.y - 10) } : { left: Math.max(4, tip.x + 14), top: Math.max(4, tip.y - 10) }}>
           <b>{label(d.k)}</b>
           <div><span><span className="dot" style={{ ['--pc' as any]: 'var(--debt)' }} /> 총 부채</span><span className="num">{won(d.debt)}</span></div>
           <div><span><span className="dot" style={{ ['--pc' as any]: 'var(--asset)' }} /> 적금+자산+주식</span><span className="num">{won(d.asset)}</span></div>
