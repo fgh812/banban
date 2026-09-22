@@ -7,3 +7,4 @@ dist
 public/mock.json
 android/
 resources/android
+__pycache__/
