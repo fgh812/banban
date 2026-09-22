@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useEffect, useState as useS } from 'react'
-import { loginWithGoogle, IS_APP_LOGIN_PAGE, loginForApp, initDeepLinkLogin } from '../firebase'
+import { loginWithGoogle, loginViaBrowser, isNativeApp, IS_APP_LOGIN_PAGE, loginForApp, initDeepLinkLogin } from '../firebase'
 
 export default function Login() {
   const [err, setErr] = useState('')
@@ -19,6 +19,7 @@ export default function Login() {
         }}>
           <GoogleIcon /> Google 계정으로 시작하기
         </button>
+        {isNativeApp && <button className="btn" style={{ marginTop: 10 }} disabled={busy} onClick={() => { setErr(''); loginViaBrowser().catch((e: any) => setErr('브라우저를 열지 못했어요 (' + (e?.message || '') + ')')) }}>브라우저로 로그인</button>}
         {err && <div className="err-msg">{err}</div>}
         <p style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 28 }}>가계부 데이터는 초대한 사람끼리만 볼 수 있어요.<br /><span style={{ opacity: .6 }}>반반 {(import.meta as any).env?.VITE_BUILD || 'web'}</span></p>
       </div>
