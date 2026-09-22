@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { watchAuth, type User } from './firebase'
+import { watchAuth, IS_APP_LOGIN_PAGE, type User } from './firebase'
 import { watchUserDoc, watchHousehold } from './household'
 import { subscribe, useData, MOCK, loadMock } from './store'
 import type { Household, UserDoc } from './types'
@@ -30,6 +30,7 @@ export default function App() {
   }, [hid])
 
   if (MOCK) return <MockApp />
+  if (IS_APP_LOGIN_PAGE) return <Login />   // 앱 로그인 중계 페이지는 항상 로그인 화면
   if (user === undefined) return <Splash />
   if (user === null) return <Login />
   if (udoc === undefined) return <Splash />

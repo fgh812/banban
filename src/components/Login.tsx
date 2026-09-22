@@ -1,9 +1,12 @@
 import { useState } from 'react'
-import { loginWithGoogle } from '../firebase'
+import { useEffect, useState as useS } from 'react'
+import { loginWithGoogle, IS_APP_LOGIN_PAGE, loginForApp, initDeepLinkLogin } from '../firebase'
 
 export default function Login() {
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
+  useEffect(() => { initDeepLinkLogin(setErr) }, [])
+  if (IS_APP_LOGIN_PAGE) return <AppLoginBridge />
   return (
     <div className="center">
       <div className="authbox">
@@ -18,6 +21,33 @@ export default function Login() {
         </button>
         {err && <div className="err-msg">{err}</div>}
         <p style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 28 }}>가계부 데이터는 초대한 사람끼리만 볼 수 있어요.<br /><span style={{ opacity: .6 }}>반반 {(import.meta as any).env?.VITE_BUILD || 'web'}</span></p>
+      </div>
+    </div>
+  )
+}
+
+// 앱에서 브라우저로 넘어온 로그인 페이지: 로그인 → 앱으로 돌아가는 링크 표시
+function AppLoginBridge() {
+  const [link, setLink] = useS('')
+  const [err, setErr] = useS('')
+  const [busy, setBusy] = useS(false)
+  useEffect(() => { if (link) { try { location.href = link } catch {} } }, [link])
+  return (
+    <div className="center">
+      <div className="authbox">
+        <h1>반반</h1>
+        <p className="tag">앱 로그인 — 구글 계정을 고르면 앱으로 돌아가요.</p>
+        {!link ? (
+          <button className="gbtn" disabled={busy} onClick={async () => {
+            setBusy(true); setErr('')
+            try { setLink(await loginForApp()) } catch (e: any) { setErr('로그인에 실패했어요 (' + (e?.code || e?.message || '') + ')') }
+            setBusy(false)
+          }}><GoogleIcon /> Google 계정으로 로그인</button>
+        ) : (
+          <a className="gbtn" href={link} style={{ textDecoration: 'none' }}>반반 앱으로 돌아가기 →</a>
+        )}
+        {err && <div className="err-msg">{err}</div>}
+        <p style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 28 }}>{link ? '자동으로 안 돌아가면 위 버튼을 눌러 주세요.' : '이 창은 앱 로그인용이에요.'}</p>
       </div>
     </div>
   )

@@ -51,3 +51,19 @@ if (fs.existsSync(styles)) {
   fs.writeFileSync(styles, st)
 }
 console.log('android setup done: versionCode', versionCode, 'versionName', versionName)
+
+// 5) 딥링크 kr.banban.app://auth (브라우저 로그인 → 앱 복귀)
+const manifest = path.join(app, 'src/main/AndroidManifest.xml')
+let m = fs.readFileSync(manifest, 'utf8')
+if (!m.includes('android:scheme="kr.banban.app"')) {
+  const filter = `
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="kr.banban.app" android:host="auth" />
+            </intent-filter>`
+  m = m.replace(/(<\/intent-filter>)/, `$1${filter}`)
+  fs.writeFileSync(manifest, m)
+  console.log('deep link intent-filter added')
+}

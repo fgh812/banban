@@ -5,6 +5,7 @@ const config: CapacitorConfig = {
   appName: '반반',
   webDir: 'dist',
   android: { allowMixedContent: false },
+  server: { allowNavigation: [] },
   plugins: {
     FirebaseAuthentication: { skipNativeAuth: false, providers: ['google.com'] },
   },
