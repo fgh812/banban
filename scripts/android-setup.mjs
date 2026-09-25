@@ -7,8 +7,29 @@ const app = path.join(root, 'app')
 const env = process.env
 
 // 1) google-services.json (Firebase 콘솔의 Android 앱 설정 파일)
+// 구글 로그인(idToken)에 쓰는 웹 클라이언트 ID. google-services.json 에 client_type 3 항목이 없으면
+// default_web_client_id 리소스가 생성되지 않아 로그인이 DEVELOPER_ERROR(10) 로 실패하므로 여기서 보정한다.
+const WEB_CLIENT_ID = '920872071338-pdkou95ini1k7opng7fvoik2nomk8af2.apps.googleusercontent.com'
 if (env.GOOGLE_SERVICES_JSON) {
-  fs.writeFileSync(path.join(app, 'google-services.json'), env.GOOGLE_SERVICES_JSON)
+  let gs = env.GOOGLE_SERVICES_JSON
+  try {
+    const j = JSON.parse(gs)
+    for (const c of j.client || []) {
+      const pkg = c.client_info?.android_client_info?.package_name
+      c.oauth_client = c.oauth_client || []
+      console.log('google-services.json client', pkg, 'oauth_client:', c.oauth_client.map(o => `${o.client_type}:${(o.client_id || '').slice(0, 24)}… ${o.android_info?.certificate_hash?.slice(0, 8) || ''}`).join(' | '))
+      if (pkg === 'kr.banban.app' && !c.oauth_client.some(o => o.client_type === 3)) {
+        c.oauth_client.push({ client_id: WEB_CLIENT_ID, client_type: 3 })
+        console.log('web client (type 3) was missing — injected', WEB_CLIENT_ID)
+      }
+      const svc = c.services = c.services || {}
+      const other = svc.appinvite_service = svc.appinvite_service || { other_platform_oauth_client: [] }
+      other.other_platform_oauth_client = other.other_platform_oauth_client || []
+      if (!other.other_platform_oauth_client.some(o => o.client_type === 3)) other.other_platform_oauth_client.push({ client_id: WEB_CLIENT_ID, client_type: 3 })
+    }
+    gs = JSON.stringify(j, null, 2)
+  } catch (e) { console.warn('google-services.json parse failed, writing as-is:', e.message) }
+  fs.writeFileSync(path.join(app, 'google-services.json'), gs)
   console.log('google-services.json written')
 } else console.warn('GOOGLE_SERVICES_JSON 이 없어요 — 구글 로그인이 앱에서 동작하지 않습니다')
 

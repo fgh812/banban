@@ -42,6 +42,8 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew bundleRelease assembleRelease --no-daemon
+      - name: Check generated default_web_client_id
+        run: grep -rh "default_web_client_id" android/app/build/generated/res/ || echo "::warning::default_web_client_id NOT generated"
       - uses: actions/upload-artifact@v4
         with:
           name: banban-android-${{ github.event.inputs.version }}
