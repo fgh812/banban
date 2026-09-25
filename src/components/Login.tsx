@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useEffect, useState as useS } from 'react'
-import { loginWithGoogle, loginViaBrowser, isNativeApp, IS_APP_LOGIN_PAGE, loginForApp, initDeepLinkLogin } from '../firebase'
+import { loginWithGoogle, loginViaBrowser, isNativeApp, lastNativeError, IS_APP_LOGIN_PAGE, loginForApp, initDeepLinkLogin } from '../firebase'
 
 export default function Login() {
   const [err, setErr] = useState('')
@@ -14,7 +14,7 @@ export default function Login() {
         <p className="tag">둘이 쓰는 가계부 — 월급부터 남는 돈까지, 두 사람 열로 나란히.</p>
         <button className="gbtn" disabled={busy} onClick={async () => {
           setBusy(true); setErr('')
-          try { await loginWithGoogle() } catch (e: any) { setErr('로그인에 실패했어요. 잠시 후 다시 시도해 주세요. (' + (e?.code || e?.message || '') + ')') }
+          try { await loginWithGoogle(); if (lastNativeError) setErr('? ??? ?? ? ????? ?????. (' + lastNativeError + ')') } catch (e: any) { setErr('로그인에 실패했어요. 잠시 후 다시 시도해 주세요. (' + (e?.code || e?.message || '') + ')') }
           setBusy(false)
         }}>
           <GoogleIcon /> Google 계정으로 시작하기
