@@ -47,9 +47,12 @@ function Splash() {
 
 function MockApp() {
   const data = useData()
-  useEffect(() => { loadMock('/mock.json') }, [])
+  // ?mock&file=sample.json&p1=지호&p2=수아 로 데이터 파일과 이름을 바꿀 수 있음(스크린샷용)
+  const q = new URLSearchParams(location.search)
+  useEffect(() => { loadMock('/' + (q.get('file') || 'mock.json')) }, [])
   if (!data.loaded) return <Splash />
-  const household: Household = { id: 'mock', name: '우리집', persons: [{ id: 'p1', name: '태행', uid: 'u1' }, { id: 'p2', name: '예슬' }], memberUids: ['u1'], inviteCode: 'ABC123' }
-  const user = { uid: 'u1', email: 'mock@example.com', displayName: '태행', photoURL: null } as unknown as User
+  const n1 = q.get('p1') || '태행', n2 = q.get('p2') || '예슬'
+  const household: Household = { id: 'mock', name: '우리집', persons: [{ id: 'p1', name: n1, uid: 'u1' }, { id: 'p2', name: n2 }], memberUids: ['u1'], inviteCode: 'ABC123' }
+  const user = { uid: 'u1', email: 'mock@example.com', displayName: n1, photoURL: null } as unknown as User
   return <Budget session={{ user, household, me: 'p1' }} />
 }

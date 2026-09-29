@@ -97,7 +97,8 @@ tr.tot.now .sub{font-size:10.5px; color:var(--muted); font-weight:400; margin-le
 .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
 .btn.ghost{background:transparent}
 .btn[disabled]{opacity:.45; cursor:not-allowed}
-.scroll{overflow-x:auto}
+.scroll{overflow-x:auto; max-width:100%}
+.lgroup{min-width:0}
 .viewbar{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; margin-bottom:12px}
 .seg{display:inline-flex; border:1px solid var(--ring); border-radius:8px; overflow:hidden; background:var(--surface-2)}
 .segbtn{font:inherit; font-size:12px; border:none; background:transparent; color:var(--ink-2); padding:6px 11px; cursor:pointer}
@@ -260,7 +261,7 @@ table.stocks tr.acct .acctname{font:inherit; font-weight:700; font-size:12.5px; 
 table.stocks tr.acct .acctname:hover{border-color:var(--grid)} table.stocks tr.acct .acctname:focus{outline:none; border-color:var(--accent); background:var(--surface)}
 table.stocks tr.acct .asum{text-align:right; font-weight:600; font-size:12px}
 table.stocks tr.acct .addbtn{font-size:11px}
-.lhead{display:flex; align-items:center; gap:10px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--grid)}
+.lhead{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--grid)}
 .lhead h3{font-size:12.5px; font-weight:700; margin:0; letter-spacing:.02em}
 .lhead .num{font-size:12px; color:var(--ink-2); margin-right:auto}
 .lhead .btn{padding:4px 9px; font-size:11.5px}
