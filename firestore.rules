@@ -30,7 +30,8 @@ service cloud.firestore {
             && exists(/databases/$(database)/documents/invites/$(request.resource.data.joinCode))
             && get(/databases/$(database)/documents/invites/$(request.resource.data.joinCode)).data.hid == hid
             && get(/databases/$(database)/documents/invites/$(request.resource.data.joinCode)).data.active == true);
-      allow delete: if false;
+      // 마지막 구성원은 가계부를 통째로 삭제할 수 있음(계정 삭제 시)
+      allow delete: if isMember(hid) && resource.data.memberUids.size() == 1;
       match /{document=**} {
         allow read, write: if isMember(hid);
       }

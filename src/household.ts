@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc, onSnapshot, arrayUnion, serverTimestamp, type Unsubscribe } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, getDocs, collection, onSnapshot, arrayUnion, arrayRemove, serverTimestamp, writeBatch, type Unsubscribe } from 'firebase/firestore'
 import { db, type User } from './firebase'
 import type { Household, Person, UserDoc } from './types'
 
@@ -74,4 +74,32 @@ export async function regenerateInvite(hid: string, oldCode: string | undefined,
 }
 export async function leaveHousehold(uid: string) {
   await setDoc(doc(db, 'users', uid), { hid: null }, { merge: true })
+}
+
+// 계정 삭제 전 데이터 정리: 가계부에서 나를 빼고, 나 혼자 쓰던 가계부면 데이터까지 지운다
+export async function deleteMyData(uid: string) {
+  const me = await getDoc(doc(db, 'users', uid))
+  const hid = me.exists() ? (me.data() as any).hid as string | null : null
+  if (hid) {
+    const h = await getDoc(doc(db, 'households', hid))
+    if (h.exists()) {
+      const d = h.data() as any
+      const members: string[] = d.memberUids || []
+      if (members.length <= 1) {
+        // 마지막 구성원: 달·메타 문서 삭제 → 초대 코드 비활성 → 가계부 문서 삭제
+        for (const sub of ['months', 'meta']) {
+          const snap = await getDocs(collection(db, 'households', hid, sub))
+          let batch = writeBatch(db), n = 0
+          for (const x of snap.docs) { batch.delete(x.ref); if (++n === 400) { await batch.commit(); batch = writeBatch(db); n = 0 } }
+          if (n) await batch.commit()
+        }
+        if (d.inviteCode) await updateDoc(doc(db, 'invites', d.inviteCode), { active: false }).catch(() => {})
+        await deleteDoc(doc(db, 'households', hid)).catch(() => {})
+      } else {
+        const persons = (d.persons || []).map((p: any) => p.uid === uid ? { ...p, uid: null } : p)
+        await updateDoc(doc(db, 'households', hid), { memberUids: arrayRemove(uid), persons })
+      }
+    }
+  }
+  await deleteDoc(doc(db, 'users', uid)).catch(() => {})
 }

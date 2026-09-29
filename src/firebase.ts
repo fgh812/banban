@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signInWithCredential, signOut, onAuthStateChanged, type User } from 'firebase/auth'
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signInWithCredential, signOut, onAuthStateChanged, deleteUser, reauthenticateWithPopup, reauthenticateWithCredential, type User } from 'firebase/auth'
 import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore'
 import { Capacitor } from '@capacitor/core'
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
@@ -101,3 +101,22 @@ export async function loginForApp(): Promise<string> {
 export async function logout() { if (isNative) { try { await FirebaseAuthentication.signOut() } catch {} } await signOut(auth) }
 export function watchAuth(cb: (u: User | null) => void) { return onAuthStateChanged(auth, cb) }
 export type { User }
+
+// 계정(로그인 정보) 삭제. 오래 전에 로그인한 경우 Firebase 가 재인증을 요구하므로 한 번 다시 로그인시킨다.
+export async function deleteAuthAccount() {
+  const u = auth.currentUser
+  if (!u) return
+  try { await deleteUser(u); return } catch (e: any) { if (e?.code !== 'auth/requires-recent-login') throw e }
+  if (isNative) {
+    // 브라우저 로그인만 되는 기기는 재인증도 브라우저로 해야 하는데 그 경로가 없으므로 안내만
+    let r
+    try { r = await FirebaseAuthentication.signInWithGoogle({ useCredentialManager: false }) }
+    catch { throw new Error('보안을 위해 로그아웃 후 다시 로그인하고 바로 계정 삭제를 눌러 주세요') }
+    if (!r.credential?.idToken) throw new Error('재인증에 실패했어요')
+    await reauthenticateWithCredential(u, GoogleAuthProvider.credential(r.credential.idToken, r.credential.accessToken))
+  } else {
+    await reauthenticateWithPopup(u, provider)
+  }
+  await deleteUser(u)
+  if (isNative) { try { await FirebaseAuthentication.signOut() } catch {} }
+}

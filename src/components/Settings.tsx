@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import type { Session } from '../App'
-import { auth, logout } from '../firebase'
-import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from 'firebase/auth'
-import { leaveHousehold, regenerateInvite, renameHousehold, savePersons } from '../household'
+import { logout, deleteAuthAccount } from '../firebase'
+import { deleteMyData, leaveHousehold, regenerateInvite, renameHousehold, savePersons } from '../household'
 import { putMonth, updateLoans, updateSettings, updateStocks, useData } from '../store'
 import type { MonthDoc, Person } from '../types'
 import { TextInput } from './AmountInput'
@@ -102,9 +101,9 @@ export default function Settings({ session, onClose }: { session: Session; onClo
             <button className="btn ghost" style={armLeave ? { color: '#fff', background: 'var(--bad)', borderColor: 'var(--bad)' } : undefined} disabled={busy}
               onClick={() => { if (!armLeave) { setArmLeave(true); setTimeout(() => setArmLeave(false), 4000); return } run(() => leaveHousehold(user.uid)) }}>{armLeave ? '정말 나가기' : '이 가계부에서 나가기'}</button>
             <button className="btn ghost" style={armDel ? { color: '#fff', background: 'var(--bad)', borderColor: 'var(--bad)' } : undefined} disabled={busy}
-              onClick={() => { if (!armDel) { setArmDel(true); setTimeout(() => setArmDel(false), 4000); return } run(async () => { const u = auth.currentUser!; try { await deleteUser(u) } catch { await reauthenticateWithPopup(u, new GoogleAuthProvider()); await deleteUser(u) } }) }}>{armDel ? '정말 계정 삭제' : '계정 삭제'}</button>
+              onClick={() => { if (!armDel) { setArmDel(true); setTimeout(() => setArmDel(false), 4000); return } run(async () => { await deleteMyData(user.uid); await deleteAuthAccount() }) }}>{armDel ? '정말 계정 삭제' : '계정 삭제'}</button>
           </div>
-          <p className="hint" style={{ marginTop: 8 }}>계정을 삭제하면 로그인 정보가 지워져요. 가계부 데이터는 함께 쓰는 사람에게 남고, 아무도 없으면 접근할 수 없게 돼요.</p>
+          <p className="hint" style={{ marginTop: 8 }}>계정을 삭제하면 로그인 정보와 내 프로필이 지워져요. 함께 쓰는 사람이 있으면 가계부는 그 사람에게 남고, 나 혼자 쓰던 가계부면 데이터까지 모두 삭제돼요(되돌릴 수 없어요).</p>
         </div>
 
         <p className="hint" style={{ marginTop: 18 }}><a href="privacy.html" target="_blank" rel="noreferrer">개인정보 처리방침</a> · 반반 {(import.meta as any).env?.VITE_BUILD || 'web'}</p>
