@@ -35,6 +35,7 @@ export default function Settings({ session, onClose }: { session: Session; onClo
       let n = 0
       Object.values(j.months as Record<string, MonthDoc>).forEach(mo => {
         const doc: MonthDoc = { m: mo.m, note: mo.note || '', income: remap(mo.income), items: (mo.items || []).map(r => ({ ...r, a: remap(r.a), d: r.d ? remap(r.d) : undefined })) }
+        if (Array.isArray((mo as any).extras) && (mo as any).extras.length) doc.extras = (mo as any).extras.map((x: any) => ({ id: x.id, n: x.n || '', a: remap(x.a) }))
         doc.items.forEach(r => { if (r.d === undefined) delete r.d })
         putMonth(doc); n++
       })

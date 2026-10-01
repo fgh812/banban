@@ -96,6 +96,7 @@ export function subscribe(hid: string | null) {
 
 function normalizeMonth(id: string, raw: any): MonthDoc {
   const mo: MonthDoc = { m: id, note: raw.note || '', income: raw.income || {}, items: Array.isArray(raw.items) ? raw.items : [] }
+  if (Array.isArray(raw.extras) && raw.extras.length) mo.extras = raw.extras
   mo.items.forEach((r: any) => { if (!r.a) r.a = {}; if (!r.id) r.id = 'r' + Math.random().toString(36).slice(2) })
   return mo
 }

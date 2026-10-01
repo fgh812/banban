@@ -73,7 +73,7 @@ export function sums(mo: MonthDoc, settings: Settings, persons: Person[]): Sums 
     })
   })
   pids.forEach(p => {
-    o.inc[p] = +(mo.income?.[p] || 0)
+    o.inc[p] = +(mo.income?.[p] || 0) + (mo.extras || []).reduce((a, x) => a + (+(x.a?.[p] || 0)), 0)
     o.net[p] = o.inc[p] - o.exp[p]
     o.now[p] = o.inc[p] - o.done[p]
     o.income += o.inc[p]; o.expense += o.exp[p]; o.netAll += o.net[p]; o.nowAll += o.now[p]

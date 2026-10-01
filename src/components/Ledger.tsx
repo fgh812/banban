@@ -47,6 +47,15 @@ export default function Ledger({ cur, mo, s, persons, pcolors }: Props) {
     setTimeout(() => (document.querySelector(`input[data-name="${id}"]`) as HTMLInputElement | null)?.focus(), 30)
   }
   const setIncome = (pid: string, n: number) => updateMonth(cur, m => { m.income = m.income || {}; m.income[pid] = n })
+  // ----- 추가 수입 (월급 외) -----
+  const addExtra = () => {
+    const id = newId()
+    updateMonth(cur, m => { m.extras = m.extras || []; m.extras.push({ id, n: '', a: {} }) })
+    setTimeout(() => (document.querySelector(`input[data-extra="${id}"]`) as HTMLInputElement | null)?.focus(), 30)
+  }
+  const setExtraName = (id: string, n: string) => updateMonth(cur, m => { const r = (m.extras || []).find(x => x.id === id); if (r) r.n = n })
+  const setExtraAmt = (id: string, pid: string, n: number) => updateMonth(cur, m => { const r = (m.extras || []).find(x => x.id === id); if (r) { r.a = r.a || {}; r.a[pid] = n; if (!n) delete r.a[pid] } })
+  const delExtra = (id: string) => updateMonth(cur, m => { m.extras = (m.extras || []).filter(x => x.id !== id); if (!m.extras.length) delete m.extras })
 
   // ----- 분류 -----
   const renameCat = (oldN: string, newN: string) => {
@@ -138,6 +147,21 @@ export default function Ledger({ cur, mo, s, persons, pcolors }: Props) {
             {persons.map(p => <td key={p.id} className="pcol" style={pc(p.id)}><AmountInput value={mo.income?.[p.id] || 0} onChange={n => setIncome(p.id, n)} ariaLabel={p.name + ' 월급'} /></td>)}
             {!mobile && <td className="rt num rowtot">{won(s.income)}</td>}{!mobile && <td></td>}
           </tr>
+          {(mo.extras || []).map(x => {
+            const tot = persons.reduce((a, p) => a + (+(x.a?.[p.id] || 0)), 0)
+            const del = <button className="del mdel" onClick={() => delExtra(x.id)} aria-label="추가 수입 삭제" title="삭제">×</button>
+            return (
+              <tr key={x.id} className="income extra">
+                <td><span className="namecell">
+                  <TextInput className="inp" value={x.n} onCommit={v => setExtraName(x.id, v)} ariaLabel="추가 수입 이름" placeholder="추가 수입 (예: 상여)" style={{ flex: 1 }} {...({ 'data-extra': x.id } as any)} />
+                  {mobile && del}
+                </span></td><td></td>
+                {persons.map(p => <td key={p.id} className="pcol" style={pc(p.id)}><AmountInput value={x.a?.[p.id] || 0} onChange={n => setExtraAmt(x.id, p.id, n)} ariaLabel={p.name + ' ' + (x.n || '추가 수입')} /></td>)}
+                {!mobile && <td className="rt num rowtot">{won(tot)}</td>}{!mobile && <td className="rt">{del}</td>}
+              </tr>
+            )
+          })}
+          <tr className="addrow income-add"><td colSpan={nCols}><button className="addbtn" onClick={addExtra}>＋ 추가 수입</button></td></tr>
 
           {cats.map(c => {
             const rows = mo.items.filter(r => r.c === c)

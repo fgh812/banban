@@ -28,8 +28,10 @@ export interface MonthDoc {
   m: string                       // YYYY-MM
   note?: string
   income: Record<string, number>
+  extras?: IncomeItem[]           // 월급 외 추가 수입 (상여·부수입 등)
   items: Item[]
 }
+export interface IncomeItem { id: string; n: string; a: Record<string, number> }
 
 // ---------- 설정 ----------
 export interface Cat { n: string; g: string }

@@ -25,6 +25,8 @@ export default function MultiView({ keys, cur, range, combine, persons, pcolors,
   })
   const alt = (k: string) => ks.indexOf(k) % 2 === 1
   const S = Object.fromEntries(ks.map(k => [k, sums(months[k], settings, persons)]))
+  const salaryOf = (k: string) => { const o: Record<string, number> = {}; pids.forEach(p => { o[p] = +(months[k]?.income?.[p] || 0) }); return o }
+  const extrasOf = (k: string) => { const o: Record<string, number> = {}; pids.forEach(p => { o[p] = (months[k]?.extras || []).reduce((a, x) => a + (+(x.a?.[p] || 0)), 0) }); return o }
   const pc = (pid: string) => ({ ['--pc' as any]: pcolors[pid] })
 
   const cell = (v: number, opts: { inst?: string; sep?: boolean; cls?: string; pid?: string; k: string; done?: boolean }) => {
@@ -59,7 +61,8 @@ export default function MultiView({ keys, cur, range, combine, persons, pcolors,
           {!combine && <tr>{ks.flatMap(k => persons.map((p, i) => <th key={k + p.id} className={'sub pcol' + (i === 0 ? ' sep' : '')} style={pc(p.id)}>{p.name}</th>))}</tr>}
         </thead>
         <tbody>
-          <tr className="income"><td className="name cname">월급</td>{ks.flatMap(k => cellsFor(k, S[k].inc))}</tr>
+          <tr className="income"><td className="name cname">월급</td>{ks.flatMap(k => cellsFor(k, salaryOf(k)))}</tr>
+          {ks.some(k => months[k]?.extras?.length) && <tr className="income extra"><td className="name cname">추가 수입</td>{ks.flatMap(k => cellsFor(k, extrasOf(k)))}</tr>}
           {cats.map((c, ci) => {
             const rows = order.filter(o => o.c === c); if (!rows.length) return null
             return [

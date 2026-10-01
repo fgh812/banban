@@ -218,6 +218,10 @@ tr.item:hover .addinst, .addinst:focus{opacity:1}
 tr.income td{padding:8px; background:var(--surface-2); border-bottom:2px solid var(--line)}
 tr.income .cname{font-size:12px; font-weight:700; color:var(--ink)}
 tr.income .inp.amt{font-size:14.5px; font-weight:600}
+tr.income.extra td{padding:5px 8px; border-bottom:1px solid var(--line)}
+tr.income.extra .inp.amt{font-size:13px; font-weight:500}
+tr.income.extra .namecell .inp{font-size:12.5px}
+tr.income-add td{padding:2px 8px 8px; background:var(--surface-2); border-bottom:2px solid var(--line)}
 tr.tot td{padding:10px 8px; border-bottom:none; font-weight:600; font-size:13.5px}
 tr.tot td:first-child{border-left:3px solid transparent}
 .grpname{font:inherit; font-weight:600; font-size:13.5px; background:transparent; border:1px solid transparent; border-radius:5px; padding:3px 6px; color:var(--ink); width:100%; min-width:0}
