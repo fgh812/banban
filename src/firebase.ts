@@ -42,14 +42,12 @@ export async function loginWithGoogle() {
     // 기존 Google Sign-In 방식을 먼저 쓰고, 실패하면 Credential Manager 로 한 번 더 시도
     // 네이티브 로그인은 한 번만 시도(계정 선택창이 두 번 뜨지 않도록).
     // 기기 문제(예: "[16] Account reauth failed")로 실패하면 바로 브라우저 로그인으로 넘어감
-    if (preferBrowserLogin()) { await loginViaBrowser(); return }
     let r
     try { r = await FirebaseAuthentication.signInWithGoogle({ useCredentialManager: false }) }
     catch (e1: any) {
       if (/cancel/i.test(e1?.message || '')) return
       console.warn('native google sign-in failed, falling back to browser', e1)
       lastNativeError = e1?.message || e1?.code || String(e1)
-      try { localStorage.setItem('banban_login', 'browser') } catch {}
       await loginViaBrowser()
       return
     }
@@ -70,7 +68,6 @@ export async function loginWithGoogle() {
   }
 }
 // 브라우저(Chrome)에서 웹 버전으로 로그인한 뒤 kr.banban.app://auth#… 딥링크로 토큰을 받아 앱에 로그인
-export function preferBrowserLogin() { try { return localStorage.getItem('banban_login') === 'browser' } catch { return false } }
 export async function loginViaBrowser() {
   await Browser.open({ url: WEB_LOGIN_URL, presentationStyle: 'popover' })
 }
