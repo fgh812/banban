@@ -17,7 +17,7 @@ export default function FlowChart({ keys, persons }: { keys: string[]; persons: 
   if (top === bot) top = bot + step
   const pw = W - L - R, ph = H - T - B
   const y = (v: number) => T + ph - (v - bot) / (top - bot) * ph
-  const bw = pw / Math.max(1, data.length), gap = Math.min(10, bw * 0.18), inner = (bw - gap * 2) / 2 - 1
+  const bw = pw / Math.max(1, data.length), gap = Math.min(14, bw * 0.26), inner = (bw - gap * 2) / 2 - 1
   const ticks: number[] = []; for (let v = bot; v <= top + 1; v += step * 2) ticks.push(v); if (!ticks.includes(0)) ticks.push(0)
   const z = y(0)
   const pts = data.map((d, i) => [L + i * bw + gap + inner + 1, y(d.net)] as const)
@@ -26,8 +26,8 @@ export default function FlowChart({ keys, persons }: { keys: string[]; persons: 
   return (
     <>
       <div className="legend">
-        <i><span className="dot" style={{ ['--pc' as any]: 'var(--tae)' }} />수입</i>
-        <i><span className="dot" style={{ ['--pc' as any]: 'var(--ye)' }} />지출</i>
+        <i><span className="dot" style={{ ['--pc' as any]: 'var(--inc)' }} />수입</i>
+        <i><span className="dot" style={{ ['--pc' as any]: 'var(--exp)' }} />지출</i>
         <i><span className="dot" style={{ ['--pc' as any]: 'var(--net)', borderRadius: '50%' }} />남는 돈</i>
       </div>
       <div className="chartbox" ref={box}>
@@ -44,7 +44,7 @@ export default function FlowChart({ keys, persons }: { keys: string[]; persons: 
             <text x={L - 9} y={(y(v) + 4).toFixed(1)} textAnchor="end" fontSize={11} fill="var(--muted)" fontFamily="IBM Plex Mono, monospace">{v === 0 ? '0' : wonAxis(v)}</text>
           </g>)}
           {data.map((d, i) => { const x0 = L + i * bw + gap; return <g key={d.k}>
-            {bar(x0, d.inc, 'var(--tae)', 'i')}{bar(x0 + inner + 2, d.exp, 'var(--ye)', 'e')}
+            {bar(x0, d.inc, 'var(--inc)', 'i')}{bar(x0 + inner + 2, d.exp, 'var(--exp)', 'e')}
             <text x={(x0 + inner + 1).toFixed(1)} y={H - B + 17} textAnchor="middle" fontSize={10.5} fill="var(--muted)" fontFamily="IBM Plex Mono, monospace">{short(d.k)}</text>
           </g> })}
           <polyline fill="none" stroke="var(--surface)" strokeWidth={5} strokeLinejoin="round" points={pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')} />
@@ -55,8 +55,8 @@ export default function FlowChart({ keys, persons }: { keys: string[]; persons: 
         {tip && (() => { const d = data[tip.i]; return (
           <div className="tip" style={tip.x > tip.w / 2 ? { right: Math.max(4, tip.w - tip.x + 14), top: Math.max(4, tip.y - 10) } : { left: Math.max(4, tip.x + 14), top: Math.max(4, tip.y - 10) }}>
             <b>{label(d.k)}</b>
-            <div><span><span className="dot" style={{ ['--pc' as any]: 'var(--tae)' }} /> 수입</span><span className="num">{won(d.inc)}</span></div>
-            <div><span><span className="dot" style={{ ['--pc' as any]: 'var(--ye)' }} /> 지출</span><span className="num">{won(d.exp)}</span></div>
+            <div><span><span className="dot" style={{ ['--pc' as any]: 'var(--inc)' }} /> 수입</span><span className="num">{won(d.inc)}</span></div>
+            <div><span><span className="dot" style={{ ['--pc' as any]: 'var(--exp)' }} /> 지출</span><span className="num">{won(d.exp)}</span></div>
             <div><span><span className="dot" style={{ ['--pc' as any]: 'var(--net)', borderRadius: '50%' }} /> 남는 돈</span><span className="num" style={{ color: d.net >= 0 ? 'var(--good-ink)' : 'var(--bad-ink)' }}>{won(d.net)}</span></div>
           </div>) })()}
       </div>

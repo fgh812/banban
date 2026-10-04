@@ -6,6 +6,7 @@
   --grid:#e1e0d9; --line:#c3c2b7; --ring:rgba(11,11,11,.10);
   --accent:#0e4f45; --accent-soft:#dfeae6;
   --tae:#2a78d6; --ye:#eb6834; --net:#1baf7a; --debt:#4a3aa7; --asset:#1baf7a;
+  --inc:#b9cfc9; --exp:#0e4f45;
   --good:#0ca30c; --bad:#d03b3b; --good-ink:#006300; --bad-ink:#a92f2f;
   --shadow:0 1px 2px rgba(11,11,11,.05), 0 8px 24px -16px rgba(11,11,11,.30);
 }
@@ -17,6 +18,8 @@
     --grid:#2c2c2a; --line:#383835; --ring:rgba(255,255,255,.10);
     --accent:#3fae99; --accent-soft:#16302c;
     --tae:#3987e5; --ye:#d95926; --net:#199e70; --debt:#9085e9; --asset:#199e70;
+  --inc:#3a5a54; --exp:#7fd1bf;
+    --inc:#3a5a54; --exp:#7fd1bf;
     --good:#0ca30c; --bad:#d03b3b; --good-ink:#0ca30c; --bad-ink:#e07070;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
   }
@@ -28,6 +31,7 @@
   --grid:#2c2c2a; --line:#383835; --ring:rgba(255,255,255,.10);
   --accent:#3fae99; --accent-soft:#16302c;
   --tae:#3987e5; --ye:#d95926; --net:#199e70; --debt:#9085e9; --asset:#199e70;
+  --inc:#3a5a54; --exp:#7fd1bf;
   --good:#0ca30c; --bad:#d03b3b; --good-ink:#0ca30c; --bad-ink:#e07070;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
 }
@@ -270,23 +274,23 @@ table.stocks tr.acct .addbtn{font-size:11px}
 .lhead .num{font-size:12px; color:var(--ink-2); margin-right:auto}
 .lhead .btn{padding:4px 9px; font-size:11.5px}
 .loan .m{flex-wrap:wrap; align-items:center; gap:6px 10px}
-.loan .m .lf{display:inline-flex; align-items:center; gap:3px; font-size:11px; color:var(--ink-2); white-space:nowrap}
-.loan .m .lf input{font:inherit; font-size:11.5px; font-family:"IBM Plex Mono",monospace; background:transparent; border:1px solid var(--grid); border-radius:5px; padding:2px 5px; color:var(--ink)}
+.loan .m .lf{display:inline-flex; align-items:center; gap:4px; font-size:12px; color:var(--ink-2); white-space:nowrap}
+.loan .m .lf input{font:inherit; font-size:12.5px; font-family:"IBM Plex Mono",monospace; background:transparent; border:1px solid var(--grid); border-radius:5px; padding:2px 5px; color:var(--ink)}
 .loan .m .lf input:focus{outline:none; border-color:var(--accent)}
 .loan .m .lf input::placeholder{color:var(--line)}
-.loan .m select{margin-left:auto; font:inherit; font-size:11px; background:transparent; border:1px solid transparent; border-radius:5px; color:var(--ink-2); padding:1px 2px; cursor:pointer}
+.loan .m select{margin-left:auto; font:inherit; font-size:12px; background:transparent; border:1px solid transparent; border-radius:5px; color:var(--ink-2); padding:1px 2px; cursor:pointer}
 .loan .m select:hover{border-color:var(--grid)}
 .loans:empty::after{content:"아직 없어요"; font-size:11.5px; color:var(--muted); padding:4px 2px}
 .loan{border:1px solid var(--ring); border-radius:10px; padding:12px 13px; background:var(--surface-2)}
-.loan .n{font-size:12.5px; font-weight:600; display:flex; align-items:center; gap:6px}
-.loan .a{font-size:18px; font-weight:500; margin-top:5px; letter-spacing:-.02em}
-.loan .m{font-size:11px; color:var(--ink-2); margin-top:6px; display:flex; justify-content:space-between; gap:8px}
-.loan .n input{font:inherit; font-weight:600; font-size:12.5px; background:transparent; border:1px solid transparent; border-radius:5px; padding:2px 5px; color:var(--ink); width:100%; min-width:0}
+.loan .n{font-size:13.5px; font-weight:600; display:flex; align-items:center; gap:6px}
+.loan .a{font-size:19px; font-weight:500; margin-top:5px; letter-spacing:-.02em}
+.loan .m{font-size:12px; color:var(--ink-2); margin-top:8px; display:flex; justify-content:space-between; gap:8px}
+.loan .n input{font:inherit; font-weight:600; font-size:13.5px; background:transparent; border:1px solid transparent; border-radius:5px; padding:2px 5px; color:var(--ink); width:100%; min-width:0}
 .loan .n input:hover{border-color:var(--grid)} .loan .n input:focus{border-color:var(--accent); outline:none; background:var(--surface)}
 .loan .n .del{margin-left:auto}
-.loan .chg{font-size:11px; margin-top:2px; min-height:1.2em}
+.loan .chg{font-size:12px; margin-top:2px; min-height:1.2em}
 .loan .chg.pos{color:var(--good-ink)} .loan .chg.neg{color:var(--bad-ink)} .loan .chg.flat{color:var(--muted)}
-.loan .delta{display:flex; align-items:center; gap:6px; margin-top:8px; font-size:11px; color:var(--ink-2); border-top:1px dashed var(--grid); padding-top:8px}
+.loan .delta{display:flex; align-items:center; gap:6px; margin-top:8px; font-size:12px; color:var(--ink-2); border-top:1px dashed var(--grid); padding-top:8px}
 .loan .delta input{width:110px; text-align:right; font-family:"IBM Plex Mono",monospace; font-size:12px; background:transparent; border:1px solid var(--grid); border-radius:5px; padding:3px 6px; color:var(--ink)}
 .loan .delta input:focus{border-color:var(--accent); outline:none}
 .bar{display:flex; gap:2px; height:13px; border-radius:4px; overflow:hidden; margin:14px 0 8px}

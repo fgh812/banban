@@ -50,9 +50,9 @@ export default function Loans({ cur, keys, tools }: { cur: string; keys: string[
                     {diff !== null && (diff === 0 ? <div className="chg flat">지난달과 같음</div>
                       : <div className={'chg ' + ((d.kind === 'debt' ? diff < 0 : diff > 0) ? 'pos' : 'neg')}>지난달보다 {diff > 0 ? '+' : '−'}{won(Math.abs(diff)).slice(1)}</div>)}
                     <div className="m">
-                      <label className="lf"><DecInput value={d.rate} onCommit={v => setField(d.id, x => { x.rate = v })} width={52} placeholder="0" />%</label>
-                      <label className="lf">월 <AmountInput value={d.monthly} style={{ width: 84, textAlign: 'right', fontSize: 11.5, padding: '2px 5px', border: '1px solid var(--grid)' }} onChange={n => setField(d.id, x => { x.monthly = n })} ariaLabel="월 납입액" /></label>
-                      <label className="lf"><TextInput value={d.start || ''} onCommit={v => setField(d.id, x => { x.start = v })} placeholder="시작일" style={{ width: 82 }} ariaLabel="시작일" /></label>
+                      <label className="lf">이율 <DecInput value={d.rate} onCommit={v => setField(d.id, x => { x.rate = v })} width={52} placeholder="0" />%</label>
+                      <label className="lf">매달 <AmountInput value={d.monthly} style={{ width: 90, textAlign: 'right', fontSize: 12.5, padding: '2px 5px', border: '1px solid var(--grid)' }} onChange={n => setField(d.id, x => { x.monthly = n })} ariaLabel="월 납입액" /></label>
+                      <label className="lf">시작 <TextInput value={d.start || ''} onCommit={v => setField(d.id, x => { x.start = v })} placeholder="시작일" style={{ width: 96 }} ariaLabel="시작일" /></label>
                       <select value={kind} onChange={e => setField(d.id, x => { x.kind = e.target.value as LoanKind })} aria-label="구분">{(['debt', 'saving', 'asset'] as LoanKind[]).map(k => <option key={k} value={k}>{KIND_LABEL[k]}</option>)}</select>
                     </div>
                     <div className="delta"><span>매달</span><DeltaInput value={delta} onCommit={v => setField(d.id, x => { x.delta = v })} /><span>{d.kind === 'debt' ? '갚음 −' : '붓기 +'}</span></div>
