@@ -1,11 +1,11 @@
 import { useData } from '../store'
-import { won, type Sums } from '../lib/util'
+import { won, wonShort, type Sums } from '../lib/util'
 import type { Person } from '../types'
 
 export default function Tiles({ s, persons, pcolors }: { s: Sums; persons: Person[]; pcolors: Record<string, string> }) {
   const { settings } = useData()
   const split = (v: Record<string, number>) => (
-    <div className="split">{persons.map(p => <i key={p.id}><span className="dot" style={{ ['--pc' as any]: pcolors[p.id] }} />{won(v[p.id] || 0)}</i>)}</div>
+    <div className="split">{persons.map(p => <i key={p.id}><span className="dot" style={{ ['--pc' as any]: pcolors[p.id] }} />{p.name} {wonShort(v[p.id] || 0)}</i>)}</div>
   )
   const nowSum = s.nowAll
   return (

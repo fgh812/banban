@@ -71,14 +71,14 @@ h1{font-family:"Gowun Batang", Georgia, serif; font-weight:700; font-size:27px; 
 .secmove{display:inline-flex; gap:2px; flex:0 0 auto}
 .mv{font:inherit; font-size:10px; line-height:1; color:var(--muted); background:var(--surface-2); border:1px solid var(--ring); border-radius:5px; padding:5px 6px; cursor:pointer}
 .mv:hover{color:var(--ink); border-color:var(--line)} .mv[disabled]{opacity:.3; cursor:default}
-.card > .hint{font-size:11.5px; color:var(--muted); margin:0 0 14px}
+.card > .hint{font-size:12.5px; color:var(--muted); margin:0 0 14px}
 
 /* ---------- summary ---------- */
 .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1px; background:var(--grid); border:1px solid var(--grid); border-radius:11px; overflow:hidden}
 .tile{background:var(--surface); padding:13px 14px 14px}
-.tile .k{font-size:11px; color:var(--muted); letter-spacing:.04em}
+.tile .k{font-size:12px; color:var(--ink-2); letter-spacing:.02em}
 .tile .v{font-size:21px; font-weight:500; margin-top:3px; letter-spacing:-.02em}
-.tile .split{display:flex; gap:10px; margin-top:7px; font-size:11px; color:var(--ink-2); flex-wrap:wrap}
+.tile .split{display:flex; gap:10px; margin-top:7px; font-size:12px; color:var(--ink-2); flex-wrap:wrap}
 .tile .split i{font-style:normal; display:inline-flex; align-items:center; gap:4px}
 .dot{width:7px; height:7px; border-radius:2px; display:inline-block}
 .dot{background:var(--pc, var(--muted))}
@@ -110,9 +110,9 @@ table.multi th{white-space:nowrap}
 table.multi th.mh{text-align:center; padding:0 6px 4px; border-bottom:none; cursor:pointer; color:var(--ink)}
 table.multi th.mh:hover{color:var(--accent)}
 table.multi th.mh.cur{color:var(--accent)}
-table.multi th.sub{font-size:10px; padding:0 6px 6px}
+table.multi th.sub{font-size:11px; padding:0 6px 6px}
 table.multi td{padding:4px 8px; white-space:nowrap}
-table.multi td.c{text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; font-size:12.5px}
+table.multi td.c{text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; font-size:13px}
 table.multi td.c.zero{color:var(--grid)}
 table.multi td.c small{color:var(--muted); font-size:10px; margin-left:4px}
 table.multi td.name{position:sticky; left:0; background:var(--surface); z-index:1; min-width:150px}
@@ -124,15 +124,15 @@ table.multi td.sep, table.multi th.sep{border-left:1px solid var(--line)}
 table.multi tr.tot td.c.pos{color:var(--good-ink)} table.multi tr.tot td.c.neg{color:var(--bad-ink)}
 table.led{width:100%; min-width:560px; border-collapse:collapse}
 table.led td:first-child{overflow:hidden}
-table.led th{font-size:10.5px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); text-align:right; padding:0 8px 7px; border-bottom:1px solid var(--line)}
+table.led th{font-size:12px; font-weight:600; letter-spacing:.02em; color:var(--ink-2); text-align:right; padding:0 8px 8px; border-bottom:1px solid var(--line)}
 table.led th.l{text-align:left}
 table.led td{padding:3px 8px; border-bottom:1px solid var(--grid); vertical-align:middle}
 table.led td:nth-child(2), table.led th:nth-child(2){padding-left:4px; padding-right:4px; white-space:nowrap}
 /* 분류별 색 — 엑셀의 색칠한 구분처럼 */
 :root{ --k0:#2a78d6; --k1:#eb6834; --k2:#1baf7a; --k3:#d99400; --k4:#6f5bd6; --k5:#e0568f; --k6:#0e8f7a; }
 tr.cat td{padding:9px 8px 7px; border-bottom:none}
-tr.cat .cname{font-size:12px; font-weight:700; letter-spacing:.02em}
-tr.cat .csum{text-align:right; font-size:12px; font-weight:600}
+tr.cat .cname{font-size:13px; font-weight:700; letter-spacing:.01em}
+tr.cat .csum{text-align:right; font-size:13px; font-weight:600}
 tr.cat.k0 td{background:color-mix(in oklab, var(--k0) 13%, var(--surface))} tr.cat.k0 .cname, tr.cat.k0 .csum{color:color-mix(in oklab, var(--k0) 75%, var(--ink))}
 tr.cat.k1 td{background:color-mix(in oklab, var(--k1) 13%, var(--surface))} tr.cat.k1 .cname, tr.cat.k1 .csum{color:color-mix(in oklab, var(--k1) 75%, var(--ink))}
 tr.cat.k2 td{background:color-mix(in oklab, var(--k2) 14%, var(--surface))} tr.cat.k2 .cname, tr.cat.k2 .csum{color:color-mix(in oklab, var(--k2) 65%, var(--ink))}
@@ -140,9 +140,9 @@ tr.cat.k3 td{background:color-mix(in oklab, var(--k3) 15%, var(--surface))} tr.c
 tr.cat.k4 td{background:color-mix(in oklab, var(--k4) 13%, var(--surface))} tr.cat.k4 .cname, tr.cat.k4 .csum{color:color-mix(in oklab, var(--k4) 75%, var(--ink))}
 tr.cat.k5 td{background:color-mix(in oklab, var(--k5) 13%, var(--surface))} tr.cat.k5 .cname, tr.cat.k5 .csum{color:color-mix(in oklab, var(--k5) 75%, var(--ink))}
 tr.cat.k6 td{background:color-mix(in oklab, var(--k6) 14%, var(--surface))} tr.cat.k6 .cname, tr.cat.k6 .csum{color:color-mix(in oklab, var(--k6) 70%, var(--ink))}
-.catname{font:inherit; font-size:12px; font-weight:700; letter-spacing:.02em; background:transparent; border:1px solid transparent; border-radius:5px; padding:2px 5px; color:inherit; flex:1 1 auto; width:auto; min-width:2.5em}
+.catname{font:inherit; font-size:13px; font-weight:700; letter-spacing:.02em; background:transparent; border:1px solid transparent; border-radius:5px; padding:2px 5px; color:inherit; flex:1 1 auto; width:auto; min-width:2.5em}
 .catname:hover{border-color:color-mix(in oklab, currentColor 30%, transparent)} .catname:focus{outline:none; border-color:var(--accent); background:var(--surface)}
-tr.cat .grp{font-size:10.5px; color:var(--muted); letter-spacing:.04em}
+tr.cat .grp{font-size:11.5px; color:var(--muted); letter-spacing:.02em}
 tr.cat .catdel{opacity:.35} tr.cat:hover .catdel, tr.cat .catdel:focus{opacity:1}
 @media (hover:none){ tr.cat .catdel{opacity:.5} }
 tr.addcat td{padding:12px 8px 14px; border-bottom:1px solid var(--line)}
@@ -187,17 +187,17 @@ tr.item.k4 td:first-child{border-left-color:var(--k4)} tr.item.k5 td:first-child
 tr.item.k6 td:first-child{border-left-color:var(--k6)}
 tr.item:hover{background:var(--surface-2)}
 /* 사람별 열 색 (--pc 는 각 셀 style 로 지정) */
-td.pcol{background:color-mix(in oklab, var(--pc) 7%, transparent)}
-th.pcol{color:color-mix(in oklab, var(--pc) 80%, var(--ink)); background:color-mix(in oklab, var(--pc) 9%, transparent); border-radius:6px 6px 0 0}
-td.pcol .inp.amt, td.pcol.c{color:color-mix(in oklab, var(--pc) 70%, var(--ink))}
+td.pcol{background:color-mix(in oklab, var(--pc) 9%, transparent)}
+th.pcol{color:color-mix(in oklab, var(--pc) 65%, var(--ink)); background:color-mix(in oklab, var(--pc) 14%, transparent); border-radius:6px 6px 0 0}
+td.pcol .inp.amt, td.pcol.c{color:var(--ink)}
 .inp.amt::placeholder{color:var(--line)}
 .inp{font:inherit; width:100%; background:transparent; border:1px solid transparent; border-radius:6px; padding:5px 7px; color:var(--ink)}
 .inp:hover{border-color:var(--grid)}
 .inp:focus{border-color:var(--accent); background:var(--surface); outline:none}
-.inp.amt{text-align:right; font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; font-size:13.5px; font-weight:500}
+.inp.amt{text-align:right; font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; font-size:14px; font-weight:500}
 .inp.zero{color:var(--muted)}
 td.rt{text-align:right}
-.rowtot{font-size:12.5px; color:var(--ink-2); padding-right:8px}
+.rowtot{font-size:13px; color:var(--ink-2); padding-right:8px}
 .inst{display:inline-flex; align-items:center; gap:2px; font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-2)}
 .inst input{width:2.4em; text-align:center; font:inherit; background:transparent; border:1px solid transparent; border-radius:5px; padding:3px 1px; color:inherit}
 .inst input:hover{border-color:var(--grid)}
@@ -213,14 +213,14 @@ tr.item:hover .addinst, .addinst:focus{opacity:1}
 .del{background:none; border:none; color:var(--muted); cursor:pointer; font-size:15px; line-height:1; padding:4px 6px; border-radius:6px}
 .del:hover{color:var(--bad-ink); background:var(--surface-2)}
 .addrow td{padding-top:5px; padding-bottom:8px}
-.addbtn{font:inherit; font-size:11.5px; color:var(--accent); background:none; border:none; cursor:pointer; padding:3px 6px; border-radius:6px}
+.addbtn{font:inherit; font-size:12.5px; color:var(--accent); background:none; border:none; cursor:pointer; padding:3px 6px; border-radius:6px}
 .addbtn:hover{background:var(--accent-soft)}
 tr.income td{padding:8px; background:var(--surface-2); border-bottom:2px solid var(--line)}
-tr.income .cname{font-size:12px; font-weight:700; color:var(--ink)}
-tr.income .inp.amt{font-size:14.5px; font-weight:600}
+tr.income .cname{font-size:13.5px; font-weight:700; color:var(--ink)}
+tr.income .inp.amt{font-size:15px; font-weight:600}
 tr.income.extra td{padding:5px 8px; border-bottom:1px solid var(--line)}
-tr.income.extra .inp.amt{font-size:13px; font-weight:500}
-tr.income.extra .namecell .inp{font-size:12.5px}
+tr.income.extra .inp.amt{font-size:14px; font-weight:500}
+tr.income.extra .namecell .inp{font-size:13.5px}
 tr.income-add td{padding:2px 8px 8px; background:var(--surface-2); border-bottom:2px solid var(--line)}
 tr.tot td{padding:10px 8px; border-bottom:none; font-weight:600; font-size:13.5px}
 tr.tot td:first-child{border-left:3px solid transparent}
@@ -336,12 +336,12 @@ html,body,#root{min-height:100%}
 /* ---------- 폰: 열 폭을 화면에 맞춤 ---------- */
 @media (max-width:600px){
   table.led{min-width:0}
-  table.led th{padding:0 4px 6px; font-size:10px; letter-spacing:.04em}
-  table.led td{padding:3px 3px}
+  table.led th{padding:0 4px 7px; font-size:11.5px; letter-spacing:0}
+  table.led td{padding:4px 3px}
   table.led td:nth-child(2), table.led th:nth-child(2){padding-left:2px; padding-right:2px}
   tr.cat td{padding:8px 3px 6px}
-  .inp{padding:5px 4px; font-size:13px}
-  .inp.amt{font-size:12.5px; padding:5px 2px}
+  .inp{padding:6px 4px; font-size:14px}
+  .inp.amt{font-size:14px; padding:6px 2px}
   .amtwrap{gap:2px} .amtwrap .done{width:14px; height:14px; margin:0}
   .inst{font-size:10.5px; gap:1px} .inst input{width:1.8em; padding:3px 0} .uninst{display:none}
   .addinst{font-size:10px; padding:3px 4px}
